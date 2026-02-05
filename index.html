@@ -1,36 +1,101 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>DarkSolutions</title>
 
 <style>
 body {
-  background: #0a0a0a;
-  color: white;
+  background: #0e0e0e;
+  color: #e5e5e5;
   font-family: Arial;
+  margin: 0;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: #111;
+  border-bottom: 1px solid #222;
+}
+
+.logo {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 60px auto;
   text-align: center;
-  padding-top: 80px;
+}
+
+.card {
+  background: #131313;
+  border: 1px solid #1f1f1f;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px;
 }
 
 .btn {
   display: inline-block;
-  margin-top: 20px;
-  padding: 12px 24px;
+  padding: 12px 22px;
   background: #6c5ce7;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.features {
+  text-align: left;
+  max-width: 700px;
+  margin: 30px auto;
+}
+
+.footer {
+  margin-top: 60px;
+  opacity: .7;
 }
 </style>
 
 </head>
 <body>
 
-<h1>DarkSolutions</h1>
-<p>Сайт в разработке</p>
+<div class="nav">
+  <div class="logo">DarkSolutions</div>
+  <div>v1.0</div>
+</div>
 
-<a class="btn" href="#">Download</a>
+<div class="container">
+
+<h1>DarkSolutions</h1>
+<p>Lua Script Injector</p>
+
+<a class="btn" href="files/DarkSolutions.zip">Download</a>
+
+<div class="card">
+<div class="features">
+• Level 8 anti-cheat protection<br>
+• Constant updates<br>
+• Simple and clean interface<br>
+• Free & keyless<br>
+• Features added by community requests
+</div>
+</div>
+
+<div>
+<a class="btn" href="https://discord.gg/9W9UcM5w">Discord</a>
+<a class="btn" href="https://t.me/darksolutionexe">Telegram</a>
+</div>
+
+<div class="footer">
+© DarkSolutions 2025
+</div>
+
+</div>
 
 </body>
 </html>
