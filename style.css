@@ -1,18 +1,180 @@
-body{background:#0a0a0a;color:white;font-family:Segoe UI;margin:0}
-.nav{display:flex;justify-content:space-between;align-items:center;background:#101010;margin:10px;padding:12px 20px;border-radius:14px}
-.logo{width:36px;margin-right:10px}
-.brand{font-weight:bold;margin-right:20px}
-.right a{margin:0 8px;color:#bbb;text-decoration:none}
-.lang{background:#181818;color:white;border:0;padding:6px 10px;border-radius:8px}
-.hero{text-align:center;margin-top:60px}
-.screens{display:flex;justify-content:center;gap:20px}
-.screen{width:45%;border-radius:12px;transition:.3s}
-.screen:hover{transform:scale(1.02)}
-.cards{margin:40px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.card{background:#111;padding:12px;border-radius:10px}
-.btn{background:white;color:black;padding:12px 24px;border-radius:10px;text-decoration:none}
-.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-.red{background:#d33}.yellow{background:#db3}.green{background:#3d9}
-.fade{opacity:0;transform:translateY(20px);animation:show .6s forwards}
-@keyframes show{to{opacity:1;transform:none}}
+body{
+  background:#0a0a0a;
+  color:white;
+  font-family:Segoe UI;
+  margin:0;
+}
+
+/* NAVBAR */
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#101010;
+  margin:10px;
+  padding:12px 20px;
+  border-radius:14px;
+  position:sticky;
+  top:0;
+  backdrop-filter:blur(10px);
+  z-index:100;
+}
+
+.left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.logo{
+  width:32px;
+}
+
+.brand{
+  font-weight:bold;
+  margin-right:10px;
+}
+
+/* STATUS DOT */
+.status{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  opacity:.9;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+  box-shadow:0 0 8px rgba(0,0,0,.3);
+}
+
+.red{background:#d33}
+.yellow{background:#db3}
+.green{background:#3d9}
+
+/* NAV LINKS */
+.right a{
+  margin:0 8px;
+  color:#bbb;
+  text-decoration:none;
+  transition:.2s;
+}
+
+.right a:hover{
+  color:white;
+}
+
+.lang{
+  background:#181818;
+  color:white;
+  border:0;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  margin-top:40px;
+}
+
+.screens{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-top:20px;
+}
+
+.screen{
+  width:45%;
+  border-radius:12px;
+  transition:.3s;
+  box-shadow:0 0 20px rgba(0,0,0,.5);
+}
+
+.screen:hover{
+  transform:scale(1.02);
+}
+
+/* CARDS */
+.cards{
+  margin:40px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;
+}
+
+.card{
+  background:#111;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #1a1a1a;
+}
+
+/* DOWNLOAD */
+.download-box{
+  text-align:center;
+  margin:40px 0;
+}
+
+.download-btn{
+  display:inline-block;
+  background:#6c5cff;
+  color:white;
+  padding:14px 26px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:bold;
+  margin:10px 0;
+  transition:.2s;
+}
+
+.download-btn:hover{
+  transform:scale(1.05);
+  background:#7b6dff;
+}
+
+/* CONTACTS */
+.contacts{
+  text-align:center;
+  margin:40px;
+}
+
+.contact-links{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-top:10px;
+}
+
+.contact{
+  background:#111;
+  padding:10px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  color:white;
+  transition:.2s;
+}
+
+.contact:hover{
+  background:#181818;
+}
+
+/* ANIMATION */
+.fade{
+  opacity:0;
+  transform:translateY(20px);
+  animation:show .6s forwards;
+}
+
+@keyframes show{
+  to{opacity:1;transform:none}
+}
