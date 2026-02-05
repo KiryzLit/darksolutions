@@ -3,182 +3,58 @@
 <head>
 <meta charset="utf-8">
 <title>DarkSolutions</title>
-
-<style>
-body {
-  background: #0d0d0d;
-  color: #e6e6e6;
-  font-family: Arial;
-  margin: 0;
-}
-
-.top {
-  text-align: center;
-  margin-top: 60px;
-}
-
-.title {
-  font-size: 42px;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.status {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-}
-
-.card {
-  background: #111;
-  border: 1px solid #1c1c1c;
-  border-radius: 14px;
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 20px;
-}
-
-.btn {
-  background: #161616;
-  border: 1px solid #222;
-  padding: 10px 20px;
-  border-radius: 10px;
-  color: white;
-  text-decoration: none;
-  margin: 6px;
-  display: inline-block;
-}
-
-.btn:hover {
-  background: #1b1b1b;
-}
-
-.lang {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-  opacity: .8;
-}
-
-img {
-  max-width: 100%;
-  border-radius: 12px;
-  margin-top: 20px;
-}
-</style>
-
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="lang" onclick="toggleLang()">RU / EN</div>
+<nav>
+  <div class="logo">DS</div>
 
-<div class="top">
-  <div class="title">
-    DarkSolutions
-    <div id="dot" class="status"></div>
+  <div class="links">
+    <a href="#home" id="nav_home">Home</a>
+    <a href="#download" id="nav_download">Download</a>
+    <a href="#changelog" id="nav_changelog">Changelog</a>
+    <a href="#contacts" id="nav_contacts">Contacts</a>
   </div>
 
-  <div id="statusText" style="margin-top:6px"></div>
+  <button onclick="toggleLang()" class="lang">EN/RU</button>
+</nav>
 
-  <div style="margin-top:20px">
-    <a class="btn" href="files/darksolutions.rar" id="downloadBtn">Download</a>
+<section id="home" class="hero">
+  <h1 id="title">DarkSolutions</h1>
+
+  <div class="status">
+    <div id="dot" class="dot red"></div>
+    <span id="status_text">...</span>
   </div>
-</div>
 
-<div class="card">
+  <p id="subtitle"></p>
 
-<div id="text">
+  <img class="screen" src="images/injector.png">
+  <img class="screen" src="images/loader.png">
+</section>
 
-</div>
+<section id="download">
+  <h2 id="download_btn"></h2>
 
-<img src="injector.png">
+  <a class="btn"
+     href="DSLoader.exe">
+     Download
+  </a>
 
-<div style="text-align:center;margin-top:20px">
-  <a class="btn" href="https://discord.gg/9W9UcM5w">Discord</a>
-  <a class="btn" href="https://t.me/darksolutionexe">Telegram</a>
-</div>
+  <div id="version"></div>
+</section>
 
-</div>
+<section id="changelog">
+  <pre id="changelog_text"></pre>
+</section>
 
-<script>
+<section id="contacts">
+  <a href="https://discord.gg/9W9UcM5w">Discord</a>
+  <a href="https://t.me/darksolutionexe">Telegram</a>
+</section>
 
-// ====== ТЫ МЕНЯЕШЬ ТОЛЬКО ТУТ ======
-
-const STATUS = "green"
-// red / yellow / green
-
-// ================================
-
-const dot = document.getElementById("dot")
-const statusText = document.getElementById("statusText")
-
-if (STATUS === "green") {
-  dot.style.background = "#2ecc71"
-}
-if (STATUS === "yellow") {
-  dot.style.background = "#f1c40f"
-}
-if (STATUS === "red") {
-  dot.style.background = "#ff3b3b"
-}
-
-
-// ===== ТЕКСТЫ =====
-
-const RU = `
-Инжектор Lua скриптов для Roblox<br><br>
-
-• Level 8 защита от античита<br>
-• Постоянные обновления<br>
-• Максимально простой интерфейс<br>
-• Полностью бесплатно и без ключей<br>
-• Функции добавляются по просьбам игроков<br><br>
-
-Версия: 1.0
-`
-
-const EN = `
-Lua Script Injector for Roblox<br><br>
-
-• Level 8 anti-cheat protection<br>
-• Constant updates<br>
-• Simple and clean interface<br>
-• Completely free & keyless<br>
-• Features added by community requests<br><br>
-
-Version: 1.0
-`
-
-let lang = "RU"
-
-function render() {
-  document.getElementById("text").innerHTML = lang === "RU" ? RU : EN
-
-  if (STATUS === "green")
-    statusText.innerText = lang === "RU" ? "Полностью работает" : "Working"
-
-  if (STATUS === "yellow")
-    statusText.innerText = lang === "RU" ? "В процессе обновления" : "Updating"
-
-  if (STATUS === "red")
-    statusText.innerText = lang === "RU" ? "Не обновлён" : "Outdated"
-
-  document.getElementById("downloadBtn").innerText =
-    lang === "RU" ? "Скачать" : "Download"
-}
-
-function toggleLang() {
-  lang = lang === "RU" ? "EN" : "RU"
-  render()
-}
-
-render()
-
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
