@@ -1,101 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8">
 <title>DarkSolutions</title>
 
 <style>
 body {
-  background: #0e0e0e;
-  color: #e5e5e5;
+  background: #0d0d0d;
+  color: #e6e6e6;
   font-family: Arial;
   margin: 0;
 }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 40px;
-  background: #111;
-  border-bottom: 1px solid #222;
-}
-
-.logo {
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.container {
-  max-width: 1000px;
-  margin: 60px auto;
+.top {
   text-align: center;
+  margin-top: 60px;
+}
+
+.title {
+  font-size: 42px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.status {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
 }
 
 .card {
-  background: #131313;
-  border: 1px solid #1f1f1f;
-  border-radius: 12px;
-  padding: 24px;
-  margin: 20px;
+  background: #111;
+  border: 1px solid #1c1c1c;
+  border-radius: 14px;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
 }
 
 .btn {
-  display: inline-block;
-  padding: 12px 22px;
-  background: #6c5ce7;
+  background: #161616;
+  border: 1px solid #222;
+  padding: 10px 20px;
+  border-radius: 10px;
   color: white;
   text-decoration: none;
-  border-radius: 10px;
-  margin: 10px;
+  margin: 6px;
+  display: inline-block;
 }
 
-.features {
-  text-align: left;
-  max-width: 700px;
-  margin: 30px auto;
+.btn:hover {
+  background: #1b1b1b;
 }
 
-.footer {
-  margin-top: 60px;
-  opacity: .7;
+.lang {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  opacity: .8;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 20px;
 }
 </style>
 
 </head>
+
 <body>
 
-<div class="nav">
-  <div class="logo">DarkSolutions</div>
-  <div>v1.0</div>
+<div class="lang" onclick="toggleLang()">RU / EN</div>
+
+<div class="top">
+  <div class="title">
+    DarkSolutions
+    <div id="dot" class="status"></div>
+  </div>
+
+  <div id="statusText" style="margin-top:6px"></div>
+
+  <div style="margin-top:20px">
+    <a class="btn" href="files/darksolutions.rar" id="downloadBtn">Download</a>
+  </div>
 </div>
 
-<div class="container">
-
-<h1>DarkSolutions</h1>
-<p>Lua Script Injector</p>
-
-<a class="btn" href="files/DarkSolutions.zip">Download</a>
-
 <div class="card">
-<div class="features">
+
+<div id="text">
+
+</div>
+
+<img src="injector.png">
+
+<div style="text-align:center;margin-top:20px">
+  <a class="btn" href="https://discord.gg/9W9UcM5w">Discord</a>
+  <a class="btn" href="https://t.me/darksolutionexe">Telegram</a>
+</div>
+
+</div>
+
+<script>
+
+// ====== ТЫ МЕНЯЕШЬ ТОЛЬКО ТУТ ======
+
+const STATUS = "green"
+// red / yellow / green
+
+// ================================
+
+const dot = document.getElementById("dot")
+const statusText = document.getElementById("statusText")
+
+if (STATUS === "green") {
+  dot.style.background = "#2ecc71"
+}
+if (STATUS === "yellow") {
+  dot.style.background = "#f1c40f"
+}
+if (STATUS === "red") {
+  dot.style.background = "#ff3b3b"
+}
+
+
+// ===== ТЕКСТЫ =====
+
+const RU = `
+Инжектор Lua скриптов для Roblox<br><br>
+
+• Level 8 защита от античита<br>
+• Постоянные обновления<br>
+• Максимально простой интерфейс<br>
+• Полностью бесплатно и без ключей<br>
+• Функции добавляются по просьбам игроков<br><br>
+
+Версия: 1.0
+`
+
+const EN = `
+Lua Script Injector for Roblox<br><br>
+
 • Level 8 anti-cheat protection<br>
 • Constant updates<br>
 • Simple and clean interface<br>
-• Free & keyless<br>
-• Features added by community requests
-</div>
-</div>
+• Completely free & keyless<br>
+• Features added by community requests<br><br>
 
-<div>
-<a class="btn" href="https://discord.gg/9W9UcM5w">Discord</a>
-<a class="btn" href="https://t.me/darksolutionexe">Telegram</a>
-</div>
+Version: 1.0
+`
 
-<div class="footer">
-© DarkSolutions 2025
-</div>
+let lang = "RU"
 
-</div>
+function render() {
+  document.getElementById("text").innerHTML = lang === "RU" ? RU : EN
+
+  if (STATUS === "green")
+    statusText.innerText = lang === "RU" ? "Полностью работает" : "Working"
+
+  if (STATUS === "yellow")
+    statusText.innerText = lang === "RU" ? "В процессе обновления" : "Updating"
+
+  if (STATUS === "red")
+    statusText.innerText = lang === "RU" ? "Не обновлён" : "Outdated"
+
+  document.getElementById("downloadBtn").innerText =
+    lang === "RU" ? "Скачать" : "Download"
+}
+
+function toggleLang() {
+  lang = lang === "RU" ? "EN" : "RU"
+  render()
+}
+
+render()
+
+</script>
 
 </body>
 </html>
