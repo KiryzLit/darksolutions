@@ -1,1 +1,25 @@
+{
+  "title": "DarkSolutions",
+  "subtitle": "Lua script injector for Roblox",
 
+  "nav_home": "Home",
+  "nav_download": "Download",
+  "nav_changelog": "Changelog",
+  "nav_contacts": "Contacts",
+
+  "features_title": "Features",
+  "f1": "Level 8 anti-cheat bypass",
+  "f2": "Constant updates",
+  "f3": "Simple interface",
+  "f4": "Completely free & keyless",
+  "f5": "Features by user requests",
+
+  "download_btn": "Download DS Loader",
+  "version": "Version: 1.0",
+
+  "status_ok": "Fully working",
+  "status_updating": "Updating",
+  "status_bad": "Outdated",
+
+  "contacts": "Contacts"
+}
