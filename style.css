@@ -129,7 +129,10 @@ body::before{
 
 .screen:hover{
   transform:scale(1.01);
-  border-color:#222;
+  border-color:#2ad46e;
+  box-shadow:
+    0 0 20px rgba(40,200,120,.25),
+    0 0 40px rgba(40,200,120,.1);
 }
 
 /* CARDS */
