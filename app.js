@@ -1,56 +1,48 @@
-let lang = 'ru';
+let lang='ru';
 
 async function loadLang(){
   try{
-    let t = await (await fetch('lang/' + lang + '.json')).json();
-
+    let t = await (await fetch('lang/'+lang+'.json')).json();
     for(let k in t){
-      let e = document.getElementById(k);
-      if(e) e.innerText = t[k];
+      let e=document.getElementById(k);
+      if(e) e.innerText=t[k];
     }
-  }catch(e){
-    console.log('Lang load error', e);
-  }
+  }catch{}
 }
 
 async function checkVersion(){
-  let dot = document.getElementById('dot');
-  let st  = document.getElementById('status_text');
+  let dot=document.getElementById('dot');
+  let st=document.getElementById('status_text');
 
   try{
-    let v = (await (await fetch('version.txt')).text()).trim();
+    let v=(await (await fetch('version.txt')).text()).trim();
 
-    if(v == '1.0'){
-      dot.className = 'dot green';
-      st.innerText = lang=='ru'
-        ? 'Полностью работает'
-        : 'Fully working';
+    if(v=='1.0'){
+      dot.className='dot green';
+      st.innerText=lang=='ru'
+        ? 'Актуальная версия'
+        : 'Up to date';
     }else{
-      dot.className = 'dot yellow';
-      st.innerText = lang=='ru'
-        ? 'Требуется обновление'
-        : 'Need update';
+      dot.className='dot yellow';
+      st.innerText=lang=='ru'
+        ? 'В процессе обновления'
+        : 'Updating';
     }
-
   }catch{
-    dot.className = 'dot red';
-    st.innerText = lang=='ru'
-      ? 'Ошибка версии'
-      : 'Version error';
+    dot.className='dot red';
+    st.innerText=lang=='ru'
+      ? 'Не обновлён'
+      : 'Outdated';
   }
 }
 
 async function loadChangelog(){
-  try{
-    let text = await (await fetch('changelog.txt')).text();
-    document.getElementById('changelog_text').innerText = text;
-  }catch(e){
-    console.log('changelog error', e);
-  }
+  document.getElementById('changelog_text').innerText =
+    await (await fetch('changelog.txt')).text();
 }
 
 function toggleLang(){
-  lang = lang=='ru' ? 'en' : 'ru';
+  lang=lang=='ru'?'en':'ru';
   loadLang();
   checkVersion();
 }
