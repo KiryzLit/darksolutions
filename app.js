@@ -17,7 +17,7 @@ async function checkVersion(){
   try{
     let v=(await (await fetch('version.txt')).text()).trim();
 
-    if(v=='1.0'){
+    if(v=='Stable'){
       dot.className='dot green';
       st.innerText=lang=='ru'
         ? 'Актуальная версия'
