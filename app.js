@@ -112,5 +112,6 @@ async function loadDiscord(){
 loadDiscord();
 draw();
 loadLang();
-checkInjector();
+checkInjector('internal.txt','dot_internal','status_internal');
+checkInjector('external.txt','dot_external','status_external');
 loadChangelog();
