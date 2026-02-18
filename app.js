@@ -16,7 +16,9 @@ async function checkInjectorStatus(file,dotId,textId){
   let st=document.getElementById(textId);
 
   try{
-    let s=(await (await fetch(file)).text()).trim().toLowerCase();
+
+    let s=(await (await fetch(file + '?t=' + Date.now())).text())
+    .trim().toLowerCase();
 
     if(s=='working'){
       dot.className='dot green';
@@ -53,7 +55,8 @@ async function checkInjectorStatus(file,dotId,textId){
       st.innerText=lang=='ru'?'Не работает':'Down';
     }
 
-  }catch{
+  }catch(e){
+    console.log('STATUS ERROR:',e); // <--- ЭТО ДОБАВЬ
     dot.className='dot red';
     st.innerText=lang=='ru'
       ? 'Ошибка'
