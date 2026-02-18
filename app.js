@@ -61,34 +61,6 @@ async function checkInjectorStatus(file,dotId,textId){
   }
 }
 
-async function checkInjector(file,dotId,textId){
-
-  let dot=document.getElementById(dotId);
-  let st=document.getElementById(textId);
-
-  try{
-    let v=(await (await fetch(file)).text()).trim();
-
-    if(v=='1.0'){
-      dot.className='dot green';
-      st.innerText=lang=='ru'
-        ? 'Работает'
-        : 'Working';
-    }else{
-      dot.className='dot yellow';
-      st.innerText=lang=='ru'
-        ? 'Обновляется'
-        : 'Updating';
-    }
-
-  }catch{
-    dot.className='dot red';
-    st.innerText=lang=='ru'
-      ? 'Не обновлён'
-      : 'Outdated';
-  }
-}
-
 async function loadChangelog(){
   document.getElementById('changelog_text').innerText =
     await (await fetch('changelog.txt')).text();
@@ -97,8 +69,8 @@ async function loadChangelog(){
 function toggleLang(){
   lang=lang=='ru'?'en':'ru';
   loadLang();
-  checkInjector('internal.txt','dot_internal','status_internal');
-  checkInjector('external.txt','dot_external','status_external');
+  checkInjectorStatus('internal_status.txt','dot_internal','status_internal');
+  checkInjectorStatus('external_status.txt','dot_external','status_external');
 }
 
 // Плавный переход по якорям
@@ -164,6 +136,6 @@ async function loadDiscord(){
 loadDiscord();
 draw();
 loadLang();
-checkInjector('internal.txt','dot_internal','status_internal');
-checkInjector('external.txt','dot_external','status_external');
+checkInjectorStatus('internal_status.txt','dot_internal','status_internal');
+checkInjectorStatus('external_status.txt','dot_external','status_external');
 loadChangelog();
