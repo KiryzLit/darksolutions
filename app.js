@@ -10,6 +10,57 @@ async function loadLang(){
   }catch{}
 }
 
+async function checkInjectorStatus(file,dotId,textId){
+
+  let dot=document.getElementById(dotId);
+  let st=document.getElementById(textId);
+
+  try{
+    let s=(await (await fetch(file)).text()).trim().toLowerCase();
+
+    if(s=='working'){
+      dot.className='dot green';
+      st.innerText=lang=='ru'?'Работает':'Working';
+    }
+
+    else if(s=='updating'){
+      dot.className='dot yellow';
+      st.innerText=lang=='ru'?'Обновляется':'Updating';
+    }
+
+    else if(s=='detected'){
+      dot.className='dot red';
+      st.innerText=lang=='ru'?'Обнаружен':'Detected';
+    }
+
+    else if(s=='patched'){
+      dot.className='dot red';
+      st.innerText=lang=='ru'?'Пропатчен':'Patched';
+    }
+
+    else if(s=='testing'){
+      dot.className='dot yellow';
+      st.innerText=lang=='ru'?'Тестируется':'Testing';
+    }
+
+    else if(s=='fixing'){
+      dot.className='dot yellow';
+      st.innerText=lang=='ru'?'Исправляется':'Fixing';
+    }
+
+    else if(s=='down'){
+      dot.className='dot red';
+      st.innerText=lang=='ru'?'Не работает':'Down';
+    }
+
+  }catch{
+    dot.className='dot red';
+    st.innerText=lang=='ru'
+      ? 'Ошибка'
+      : 'Error';
+  }
+}
+
 async function checkInjector(file,dotId,textId){
 
   let dot=document.getElementById(dotId);
