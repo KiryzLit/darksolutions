@@ -46,7 +46,8 @@ async function loadChangelog(){
 function toggleLang(){
   lang=lang=='ru'?'en':'ru';
   loadLang();
-  checkVersion();
+  checkInjector('internal.txt','dot_internal','status_internal');
+  checkInjector('external.txt','dot_external','status_external');
 }
 
 // Плавный переход по якорям
