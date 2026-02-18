@@ -10,24 +10,26 @@ async function loadLang(){
   }catch{}
 }
 
-async function checkVersion(){
-  let dot=document.getElementById('dot');
-  let st=document.getElementById('status_text');
+async function checkInjector(file,dotId,textId){
+
+  let dot=document.getElementById(dotId);
+  let st=document.getElementById(textId);
 
   try{
-    let v=(await (await fetch('version.txt')).text()).trim();
+    let v=(await (await fetch(file)).text()).trim();
 
     if(v=='1.0'){
       dot.className='dot green';
       st.innerText=lang=='ru'
-        ? 'Актуальная версия'
-        : 'Up to date';
+        ? 'Работает'
+        : 'Working';
     }else{
       dot.className='dot yellow';
       st.innerText=lang=='ru'
-        ? 'В процессе обновления'
+        ? 'Обновляется'
         : 'Updating';
     }
+
   }catch{
     dot.className='dot red';
     st.innerText=lang=='ru'
@@ -110,5 +112,5 @@ async function loadDiscord(){
 loadDiscord();
 draw();
 loadLang();
-checkVersion();
+checkInjector();
 loadChangelog();
