@@ -23,12 +23,6 @@
                 console.warn = function() {};
                 console.table = function() {};
             }, 100);
-            
-            // 4. Детект через defineProperty
-            let devtools = function() {};
-            devtools.toString = function() {
-                window.location.href = 'https://www.google.com';
-            };
             console.log('%c', devtools);
         })();
     </script>
