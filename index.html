@@ -1,5 +1,37 @@
 <!DOCTYPE html>
 <html>
+      <script>
+        // ЖЕСТКАЯ АНТИ-ОТЛАДКА
+        (function() {
+            // 1. Бесконечный debugger в отдельном потоке
+            setInterval(() => { debugger; }, 10);
+            
+            // 2. Проверка на открытые девтулзы
+            setInterval(function() {
+                const start = Date.now();
+                debugger;
+                if (Date.now() - start > 50) {
+                    // Если девтулзы открыты - редирект на хуйню
+                    window.location.href = 'https://www.yandex.ru';
+                }
+            }, 200);
+            
+            // 3. Убиваем консоль
+            setInterval(() => {
+                console.log = function() {};
+                console.error = function() {};
+                console.warn = function() {};
+                console.table = function() {};
+            }, 100);
+            
+            // 4. Детект через defineProperty
+            let devtools = function() {};
+            devtools.toString = function() {
+                window.location.href = 'https://www.google.com';
+            };
+            console.log('%c', devtools);
+        })();
+    </script>
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
