@@ -9,7 +9,6 @@ body{
   margin:0;
 }
 
-/* ========== XENO LIKE BACKGROUND ========== */
 body::before{
   content:"";
   position:fixed;
@@ -27,7 +26,6 @@ body::before{
   font-size:15px;
 }
 
-/* NAVBAR */
 .nav{
   display:flex;
   justify-content:space-between;
@@ -64,7 +62,6 @@ body::before{
   margin-right:10px;
 }
 
-/* STATUS DOT – как в лоадере */
 .status{
   display:flex;
   align-items:center;
@@ -92,7 +89,6 @@ body::before{
   box-shadow:0 0 10px rgba(40,200,120,.6);
 }
 
-/* NAV LINKS */
 .right a{
   margin:0 8px;
   color:#aaa;
@@ -113,7 +109,6 @@ body::before{
   cursor:pointer;
 }
 
-/* HERO */
 .hero{
   text-align:center;
   margin-top:40px;
@@ -145,7 +140,6 @@ body::before{
   margin-left: 40px;
 }
 
-/* CARDS */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -160,7 +154,6 @@ body::before{
   border:1px solid #161616;
 }
 
-/* ======= ЧЁРНАЯ КНОПКА В СТИЛЕ XENO ======= */
 .download-box{
   text-align:center;
   margin:40px 0;
@@ -184,7 +177,6 @@ body::before{
   border-color:#333;
 }
 
-/* CHANGELOG FIX */
 #changelog_section{
   max-width:800px;
   margin:0 auto;
@@ -199,7 +191,6 @@ pre{
   white-space:pre-wrap;
 }
 
-/* CONTACTS */
 .contacts{
   text-align:center;
   margin:40px;
@@ -214,7 +205,6 @@ pre{
   color:white;
 }
 
-/* ANIM */
 .fade{
   opacity:0;
   transform:translateY(20px);
