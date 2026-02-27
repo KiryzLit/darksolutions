@@ -73,7 +73,6 @@ function toggleLang(){
   checkInjectorStatus('external_status.txt','dot_external','status_external');
 }
 
-// Плавный переход по якорям
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', function(e) {
     e.preventDefault();
@@ -85,7 +84,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// ===== PARTS =====
 const c = document.getElementById('particles');
 const ctx = c.getContext('2d');
 
@@ -118,7 +116,6 @@ function draw(){
   requestAnimationFrame(draw);
 }
 
-// ===== DISCORD COUNTER =====
 async function loadDiscord(){
   try{
     let r = await fetch(
