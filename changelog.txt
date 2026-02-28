@@ -1,5 +1,21 @@
-21.02.26
-• Немного изменено меню
-• Добавлен Google вместо YouTube Music
-• Добавлен Output
-• Возвращён Explorer в Editor
+> 🇷🇺 **RU**
+> 📖 **Инструкция**
+> 1. Скачай лоадер с сайта
+> 2. Отключи антивирус
+> 3. Создай новую папку, туда закинь **DSLoader.exe**
+> 4. Запусти **DSLoader.exe**
+> 5. Выбери билд **Internal или External**
+> 6. После установки → **Start, выбираешь какой билд запустить**
+> 7. Ожидайте запуска
+> 8. Готово, можно играть
+
+> 🇺🇸 **EN**
+> 📖 **Guide**
+> 1. Download the loader from the official website.
+> 2. Disable your antivirus software.
+> 3. Create a new folder and move **DSLoader.exe** into it.
+> 4. Run **DSLoader.exe**.
+> 5. Select your preferred build: **Internal** or **External**.
+> 6. After installation, click **Start** and choose the build you want to launch.
+> 7. Wait for the injector to initialize.
+> 8. Done — you're ready to play.
